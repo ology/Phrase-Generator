@@ -4,9 +4,9 @@ This is a simple real-time MIDI phrase generator app that I use and experiment w
 
 ![UI](MIDI-Phrase-Generator-UI.png)
 
-1. Install `fluidsynth` - https://www.fluidsynth.org/
+1. Install `fluidsynth` - https://www.fluidsynth.org/ or use <b>your synth</b>
 
-2. Install Perl, including the `cpanm` utility.
+2. Install Perl, including the `cpanm` utility
    1. Windows
       1. https://strawberryperl.com/
    2. Everyone else
