@@ -388,7 +388,7 @@ post '/parts' => sub ($c) {
         splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
         $part->clear_voice;
         %edit = ();
-        $c->flash(message => 'Unit ' . $v->{edit_part} . ' updated');
+        $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
     }
     else {
         push @parts, Music::VoicePhrase->new(%params); #, verbose => 1);
@@ -503,7 +503,7 @@ __DATA__
   <h2 class="red"><strong>Error:</strong> <%= $err %></h2>
 % }
 % if (my $msg = flash('message')) {
-  <!-- <h2 class="green"><%= $msg %></h2> -->
+  <h2 class="green"><%= $msg %></h2>
 % }
 
 <table border="0" cellpadding="0" cellspacing="0" id="top">
