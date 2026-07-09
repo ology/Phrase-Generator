@@ -634,12 +634,6 @@ stopped
 % }
   </select>
 </div>
-% if (@$parts) {
-<button id="saveModalBtn" <%= !@$parts ? 'disabled' : '' %>>Save</button>
-<div id="save_modal" title="Save Unit Set" style="display:none;">
-  <input type="text" name="save_parts" value="667">
-</div>
-% }
 
 % } else {
 
@@ -653,12 +647,10 @@ stopped
     <option value="667">667</option>
   </select>
 </div>
-% if (@$parts) {
 <button id="saveModalBtn">Save</button>
 <div id="save_modal" title="Save Unit Set" style="display:none;">
   <input type="text" name="save_units" value="667">
 </div>
-% }
 
     </td> <!-- child1 -->
     <td class="left_pad"> <!-- child1 -->
