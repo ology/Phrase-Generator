@@ -15,9 +15,9 @@ This is a simple real-time MIDI phrase generator app that I use and experiment w
 ```shell
 cpanm --verbose --installdeps .
 ```
-1. Run the app:
+4. Run the app:
 ```shell
 morbo phrase-generator.pl --verbose --listen http://127.0.0.1:3333
 ```
-1. Browse to http://127.0.0.1:3333/
-2. Voila!
+5. Browse to http://127.0.0.1:3333/
+6. Voila!
