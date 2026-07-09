@@ -1,4 +1,4 @@
-# Phrase-Generator
+# MIDI Phrase Generator
 
 This is a simple real-time MIDI phrase generator app that I use and experiment with. YMMV
 
