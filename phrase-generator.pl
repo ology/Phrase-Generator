@@ -35,7 +35,7 @@ GetOptionsFromArray(\@ARGV, \%opt,
 );
 
 store {}, SAVED unless -e SAVED;
-my $saved_units = retrieve(SAVED);
+my $saved_parts = retrieve(SAVED);
 
 my %edit; # edit a part
 
@@ -322,7 +322,7 @@ get '/' => sub ($c) {
         running       => defined($timer_id) ? 1 : 0,
         edit          => \%edit,
         used_channels => \%used_channels,
-        saved         => $saved_units,
+        saved         => $saved_parts,
     );
     $c->render('index');
 };
@@ -433,6 +433,14 @@ post '/cycle' => sub ($c) {
     open_midi();
     send_program_changes();
     $c->flash(message => "Fluidsynth $pid cycled");
+    $c->redirect_to('/');
+};
+
+post '/save' => sub ($c) {
+    my $v = $c->req->params->to_hash;
+    $saved_parts->{ $v->{save_parts} } = \@parts;
+    store $saved_parts, SAVED;
+    $c->flash(message => 'Unit set saved as ' . $v->{save_parts});
     $c->redirect_to('/');
 };
 
@@ -629,14 +637,17 @@ stopped
 </form>
 
 <button id="loadModalBtn">Load</button>
-<div id="load_modal" title="Load Unit Set" style="display:none;">
+<div id="load_modal" title="Load Unit Set" class="display_none">
   <select name="load_units">
     <option value="667">667</option>
   </select>
 </div>
 <button id="saveModalBtn">Save</button>
-<div id="save_modal" title="Save Unit Set" style="display:none;">
-  <input type="text" name="save_units" value="667">
+<div id="save_modal" title="Save Unit Set" class="display_none">
+  <form method="post" action="/save">
+    <label>Name <input type="text" name="save_parts" class="box_size"></label>
+    <button type="submit" name="submit" value="submit">Save</button>
+  </form>
 </div>
 
     </td> <!-- child1 -->
@@ -697,12 +708,14 @@ stopped
 <p><em>No units configured</em></p>
 
 <button id="loadModalBtn">Load</button>
-<div id="load_modal" title="Load Unit Set" style="display:none;">
-  <select name="load_parts">
+<div id="load_modal" title="Load Unit Set" class="display_none">
+  <form method="post" action="/load">
+    <select name="load_parts">
 % for my $n (sort keys %$saved) {
-    <option value="<%= $n %>" <%= $n eq $_ ? 'selected' : '' %>><%= $n %></option>
+      <option value="<%= $n %>" <%= $n eq $_ ? 'selected' : '' %>><%= $n %></option>
 % }
-  </select>
+    </select>
+  </form>
 </div>
 % }
 
@@ -782,6 +795,8 @@ $(document).ready(function() {
   $("#save_modal").dialog({
     autoOpen: false,
     modal: true,
+    width: 350,
+    height: 400,
     buttons: {
       "Close": function() {
         $(this).dialog("close");
