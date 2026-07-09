@@ -663,6 +663,7 @@ stopped
       <option value="<%= $n %>"><%= $n %></option>
 % }
     </select>
+    <p></p>
     <button type="submit" name="submit" value="submit">Load</button>
   </form>
 </div>
@@ -670,6 +671,7 @@ stopped
 <div id="save_modal" title="Save Unit Set" class="display_none">
   <form method="post" action="/save">
     <label>Name <input type="text" name="save_parts" class="box_size"></label>
+    <p></p>
     <button type="submit" name="submit" value="submit">Save</button>
   </form>
 </div>
@@ -739,6 +741,7 @@ stopped
       <option value="<%= $n %>"><%= $n %></option>
 % }
     </select>
+    <p></p>
     <button type="submit" name="submit" value="submit">Load</button>
   </form>
 </div>
