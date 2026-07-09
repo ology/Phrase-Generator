@@ -808,7 +808,7 @@ stopped
 	</section>
 	<div class="headtrim"> </div>
 	<div class="baseboard"> </div>
-<script type="text/javascript" src="js/lcars.js"></script> <!-- XXX needed? -->
+
 <script>
 $(document).ready(function() {
   $("#load_modal").dialog({
