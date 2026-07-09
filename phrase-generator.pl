@@ -37,8 +37,7 @@ GetOptionsFromArray(\@ARGV, \%opt,
 store {}, SAVED unless -e SAVED;
 my $saved_parts = retrieve(SAVED);
 
-my $known_ports = [ known_ports()->@*, 'fluidsynth' ];
-say ddc $known_ports;
+my @known_ports = ( known_ports()->@*, 'fluidsynth' );
 
 my %edit; # edit a part
 
@@ -334,6 +333,7 @@ get '/' => sub ($c) {
         edit          => \%edit,
         used_channels => \%used_channels,
         saved         => $saved_parts,
+        ports         => \@known_ports,
     );
     $c->render('index');
 };
@@ -758,7 +758,13 @@ stopped
 
 <h2>Settings</h2>
 <form method="post" action="/settings">
-  <label>MIDI port <input type="text" name="port" value="<%= $opt->{port} %>"></label>
+  <label>MIDI port
+    <select name="port">
+      % for my $n (@$ports) {
+        <option value="<%= $n %>"><%= $n %></option>
+      % }
+    </select>
+  </label>
   <label>BPM <input type="number" name="bpm" value="<%= $opt->{bpm} %>" size="4"></label>
   <label>Key
     <select name="base">
