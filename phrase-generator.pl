@@ -749,7 +749,7 @@ stopped
 <form method="post" action="/settings">
   <label>MIDI port <input type="text" name="port" value="<%= $opt->{port} %>"></label>
   <label>BPM <input type="number" name="bpm" value="<%= $opt->{bpm} %>" size="4"></label>
-  <label>Base note
+  <label>Key
     <select name="base">
       % for my $k ($choices->{keys_order}->@*) {
         <option value="<%= $choices->{keys}{$k} %>" <%= $edit->{base} && $k eq $edit->{base} ? 'selected' : '' %>><%= $k %></option>
