@@ -1,0 +1,8 @@
+requires 'Mojolicious::Lite';
+requires 'Data::Dumper::Compact';
+requires 'MIDI::RtMidi::FFI::Device';
+requires 'MIDI::Util';
+requires 'Music::Scales';
+requires 'Music::VoicePhrase';
+requires 'Proc::Find';
+requires 'IPC::Open2';
