@@ -511,6 +511,9 @@ Status:
 stopped
 % }
 <p></p>
+<form method="post" action="/cycle" class="block">
+  <button type="submit">Cycle</button>
+</form>
 <div class="form-container">
   <form method="post" action="/start" class="block">
     <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
@@ -519,9 +522,6 @@ stopped
     <button type="submit" <%= $running ? '' : 'disabled' %>>⏹</button>
   </form>
 </div>
-<form method="post" action="/cycle" class="block">
-  <button type="submit">Cycle</button>
-</form>
 
     </td> <!-- child1 -->
     <td> <!-- child1 -->
