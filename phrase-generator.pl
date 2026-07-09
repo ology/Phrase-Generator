@@ -559,18 +559,6 @@ stopped
     </select>
   </label>
 
-  <label>Gate amount
-    <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00"></label>
-
-  <label>Motifs
-    <select name="motif_num">
-      % for my $n (1 .. 16) {
-        % my $selected = defined $edit->{motif_num} ? $edit->{motif_num} : '4';
-        <option value="<%= $n %>" <%= ($edit->{motif_num} && $n == $edit->{motif_num}) || ($n == $selected) ? 'selected' : '' %>><%= $n %></option>
-      % }
-    </select>
-  </label>
-
   <label>Scale
     <select name="scale">
       % for my $n (sort $choices->{scale_names}->@*) {
@@ -585,6 +573,34 @@ stopped
       % for my $n (0 .. 9) {
         % my $selected = defined $edit->{octave} ? $edit->{octave} : '3';
         <option value="<%= $n %>" <%= ($edit->{octave} && $n eq $edit->{octave}) || ($n == $selected) ? 'selected' : '' %>><%= $n %></option>
+      % }
+    </select>
+  </label>
+
+  <label>Pitch range
+    <select name="pitches">
+      % for my $n (sort keys $choices->{pitches}->%*) {
+        <option value="<%= $n %>" <%= $edit->{pitches} && $n eq $edit->{pitches} ? 'selected' : '' %>><%= $n %></option>
+      % }
+    </select>
+  </label>
+
+  <label>Allowed intervals
+    <select name="intervals">
+      % for my $n (sort keys $choices->{intervals}->%*) {
+        <option value="<%= $n %>" <%= $edit->{intervals} && $n eq $edit->{intervals} ? 'selected' : '' %>><%= $n %></option>
+      % }
+    </select>
+  </label>
+
+  <label>Gate amount
+    <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00"></label>
+
+  <label>Motifs
+    <select name="motif_num">
+      % for my $n (1 .. 16) {
+        % my $selected = defined $edit->{motif_num} ? $edit->{motif_num} : '4';
+        <option value="<%= $n %>" <%= ($edit->{motif_num} && $n == $edit->{motif_num}) || ($n == $selected) ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
@@ -611,21 +627,6 @@ stopped
   <label>Groups
     <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="e.g. 0 0 1 space separated" size="22"></label>
 
-  <label>Pitches
-    <select name="pitches">
-      % for my $n (sort keys $choices->{pitches}->%*) {
-        <option value="<%= $n %>" <%= $edit->{pitches} && $n eq $edit->{pitches} ? 'selected' : '' %>><%= $n %></option>
-      % }
-    </select>
-  </label>
-
-  <label>Intervals
-    <select name="intervals">
-      % for my $n (sort keys $choices->{intervals}->%*) {
-        <option value="<%= $n %>" <%= $edit->{intervals} && $n eq $edit->{intervals} ? 'selected' : '' %>><%= $n %></option>
-      % }
-    </select>
-  </label>
   <p></p>
   % if (defined $edit->{edit_part}) {
   <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
