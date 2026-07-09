@@ -13,16 +13,22 @@ This is a simple real-time MIDI phrase generator app that I use and experiment w
       3. Or use `plenv`
       4. Or use `perlbrew`
 
-3. Install the Perl dependencies:
+3. Clone the repo and change to that directory:
+```shell
+git clone https://github.com/ology/Phrase-Generator.git
+cd Phrase-Generator/
+```
+
+4. Install the Perl dependencies:
 ```shell
 cpanm --verbose --installdeps .
 ```
 
-4. Run the app:
+5. Run the app:
 ```shell
 morbo phrase-generator.pl --verbose --listen http://127.0.0.1:3333
 ```
 
-5. Browse to http://127.0.0.1:3333/
+6. Browse to http://127.0.0.1:3333/
 
-6. Voila!
+7. Voila!
