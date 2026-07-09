@@ -523,7 +523,7 @@ stopped
 % }
 <p></p>
 <form method="post" action="/cycle" class="block">
-  <button type="submit">Enable</button>
+  <button type="submit">Fluidsynth</button>
 </form>
 <div class="form-container">
   <form method="post" action="/start" class="block">
