@@ -4,15 +4,20 @@ This is a simple real-time MIDI phrase generator app that I use and experiment w
 
 1. Install `fluidsynth` - https://www.fluidsynth.org/
 2. Install Perl, including the `cpanm` utility.
-   1. Windows - https://strawberryperl.com/
-   2. Everyone else - Use your package manager or get it from https://www.perl.org/
+   1. Windows
+      1. https://strawberryperl.com/
+   2. Everyone else
+      1. Use your package manager
+      2. Or get it from https://www.perl.org/
+      3. Or use `plenv`
+      4. Or use `perlbrew`
 3. Install the Perl dependencies:
 ```shell
 cpanm --verbose --installdeps .
 ```
-4. Run the app:
+1. Run the app:
 ```shell
 morbo phrase-generator.pl --verbose --listen http://127.0.0.1:3333
 ```
-5. Browse to http://127.0.0.1:3333/
-6. Voila!
+1. Browse to http://127.0.0.1:3333/
+2. Voila!
