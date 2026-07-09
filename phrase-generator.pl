@@ -623,20 +623,7 @@ stopped
     <td>
 
 <h2>Units [<%= scalar @$parts %>]</h2>
-% unless (@$parts) {
-  <p><em>No units configured</em></p>
-
-<button id="loadModalBtn">Load</button>
-<div id="load_modal" title="Load Unit Set" style="display:none;">
-  <select name="load_parts">
-% for my $n (sort keys %$saved) {
-    <option value="<%= $n %>" <%= $n eq $_ ? 'selected' : '' %>><%= $n %></option>
-% }
-  </select>
-</div>
-
-% } else {
-
+% if (@$parts) {
 <form method="post" action="/clear">
   <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
 </form>
@@ -704,6 +691,19 @@ stopped
     </tr>
   % }
 </table> <!-- child3 -->
+
+% } else {
+
+<p><em>No units configured</em></p>
+
+<button id="loadModalBtn">Load</button>
+<div id="load_modal" title="Load Unit Set" style="display:none;">
+  <select name="load_parts">
+% for my $n (sort keys %$saved) {
+    <option value="<%= $n %>" <%= $n eq $_ ? 'selected' : '' %>><%= $n %></option>
+% }
+  </select>
+</div>
 % }
 
     </td> <!-- child2 -->
