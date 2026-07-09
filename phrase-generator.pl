@@ -37,6 +37,9 @@ GetOptionsFromArray(\@ARGV, \%opt,
 store {}, SAVED unless -e SAVED;
 my $saved_parts = retrieve(SAVED);
 
+my $known_ports = [ known_ports()->@*, 'fluidsynth' ];
+say ddc $known_ports;
+
 my %edit; # edit a part
 
 # redefine what happens on ^C, same as the original script
@@ -301,6 +304,14 @@ sub stop_sequencer {
         warn "Error closing MIDI port: $e\n" if $opt{verbose};
     };
     undef $midi_out;
+}
+
+sub known_ports {
+    my $device = RtMidiOut->new;
+    return [
+        map { $device->get_port_name($_) }
+            sort { $a <=> $b } keys $device->get_all_port_nums->%*
+    ];
 }
 
 
