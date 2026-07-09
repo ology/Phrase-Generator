@@ -444,6 +444,13 @@ post '/save' => sub ($c) {
     $c->redirect_to('/');
 };
 
+post '/load' => sub ($c) {
+    my $v = $c->req->params->to_hash;
+    @parts = $saved_parts->{ $v->{load_parts} }->@*;
+    $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
+    $c->redirect_to('/');
+};
+
 app->start;
 
 
@@ -638,9 +645,14 @@ stopped
 
 <button id="loadModalBtn">Load</button>
 <div id="load_modal" title="Load Unit Set" class="display_none">
-  <select name="load_units">
-    <option value="667">667</option>
-  </select>
+  <form method="post" action="/load">
+    <select name="load_parts">
+% for my $n (sort keys %$saved) {
+      <option value="<%= $n %>"><%= $n %></option>
+% }
+    </select>
+    <button type="submit" name="submit" value="submit">Load</button>
+  </form>
 </div>
 <button id="saveModalBtn">Save</button>
 <div id="save_modal" title="Save Unit Set" class="display_none">
@@ -712,9 +724,10 @@ stopped
   <form method="post" action="/load">
     <select name="load_parts">
 % for my $n (sort keys %$saved) {
-      <option value="<%= $n %>" <%= $n eq $_ ? 'selected' : '' %>><%= $n %></option>
+      <option value="<%= $n %>"><%= $n %></option>
 % }
     </select>
+    <button type="submit" name="submit" value="submit">Load</button>
   </form>
 </div>
 % }
