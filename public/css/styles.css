@@ -38,10 +38,10 @@ input[type="checkbox"] {
     display: inline-block;
 }
 .red {
-    color: red;
+    color: #c44;
 }
 .green {
-    color: green;
+    color: #993;
 }
 .form-container {
   display: flex;
