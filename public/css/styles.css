@@ -19,8 +19,7 @@ table, th, td {
     margin-bottom: 0.75em;
 }
 td {
-    /* border-collapse: collapse; XXX No? */
-    /* text-align: center;  Centers text horizontally */
+    /* text-align: center; Centers text horizontally */
     vertical-align: top; /* Centers text vertically */
     padding-left: 0.75em;
     padding-right: 0.75em;
