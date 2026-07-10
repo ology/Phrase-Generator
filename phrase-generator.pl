@@ -489,7 +489,13 @@ post '/cycle' => sub ($c) {
 
 post '/save' => sub ($c) {
     my $v = $c->req->params->to_hash;
-    $saved_parts->{ $v->{save_parts} } = \@parts;
+    my @bits;
+    my $params;
+    for my $part (@parts) {
+        $params = { map { $_ => $part->$_ } $choices{parameters}->@* };
+        push @bits, $params;
+    }
+    $saved_parts->{ $v->{save_parts} } = \@bits;
     store $saved_parts, SAVED;
     $c->flash(message => 'Unit set saved as ' . $v->{save_parts});
     $c->redirect_to('/');
@@ -497,7 +503,8 @@ post '/save' => sub ($c) {
 
 post '/load' => sub ($c) {
     my $v = $c->req->params->to_hash;
-    @parts = $saved_parts->{ $v->{load_parts} }->@*;
+    @parts = ();
+    push @parts, Music::VoicePhrase->new($_) for $saved_parts->{ $v->{load_parts} }->@*;
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
 };
@@ -712,7 +719,7 @@ stopped
   <form method="post" action="/save">
     <label>Name <input type="text" name="save_parts" class="box_size"></label>
     <p></p>
-    <button type="submit" name="submit" value="submit">Save</button>
+    <button type="submit" name="save" value="submit">Save</button>
   </form>
 </div>
 
