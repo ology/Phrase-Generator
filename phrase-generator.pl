@@ -589,7 +589,7 @@ stopped
 % } else {
 <h2>Affix Unit</h2>
 % }
-<form method="post" action="/parts">
+<form method="post" action="/parts" <%= keys %$edit ? 'class=active_border' : '' %>>
   <label>Channel
     <select name="channel">
       % for my $n (0 .. 15) {
