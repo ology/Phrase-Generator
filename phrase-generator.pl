@@ -730,7 +730,7 @@ stopped
 
 <table border="0" cellpadding="0" cellspacing="0" id="child3">
   <tr>
-    <th class="middle_align">#</th>
+    <th class="middle_align">•</th>
     <th class="middle_align">Channel</th>
     <th class="middle_align">Patch</th>
     <th class="middle_align">Motifs</th>
@@ -743,14 +743,14 @@ stopped
   % for my $i (0 .. $#$parts) {
     % my $p = $parts->[$i];
     <tr>
-      <td class="middle_align"><%= $i + 1 %></td>
-      <td class="middle_align"><%= $p->{channel} %></td>
-      <td class="middle_align"><%= $choices->{number}{ $p->{patch} } %></td>
-      <td class="middle_align"><%= $p->{motif_num} %></td>
-      <td class="middle_align"><%= $p->{scale} %></td>
-      <td class="middle_align"><%= $p->{octave} %></td>
-      <td class="middle_align"><%= join(' ', $p->{pool}->@*) %></td>
-      <td class="middle_align">
+      <td class="middle_align blue"><%= $i + 1 %></td>
+      <td class="middle_align blue"><%= $p->{channel} %></td>
+      <td class="middle_align blue"><%= $choices->{number}{ $p->{patch} } %></td>
+      <td class="middle_align blue"><%= $p->{motif_num} %></td>
+      <td class="middle_align blue"><%= $p->{scale} %></td>
+      <td class="middle_align blue"><%= $p->{octave} %></td>
+      <td class="middle_align blue"><%= join(' ', $p->{pool}->@*) %></td>
+      <td class="middle_align blue">
       <div class="form-container">
         <form method="post" action="/edit">
           <input type="hidden" name="channel" value="<%= $p->{channel} %>">
