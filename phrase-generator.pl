@@ -569,9 +569,11 @@ Status:
 stopped
 % }
 <p></p>
+% if ($opt->{port} =~ /fluid/) {
 <form method="post" action="/cycle" class="block">
   <button type="submit">Enable</button>
 </form>
+% }
 <div class="form-container">
   <form method="post" action="/start" class="block">
     <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
