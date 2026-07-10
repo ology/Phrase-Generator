@@ -378,6 +378,46 @@ post '/parts' => sub ($c) {
     $params{intervals} = $choices{intervals}{ $v->{intervals} || '' };
     # say ddc \%params;
 
+    # TODO modularize this:
+    if ($params{weights}->@* < $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            if (defined $params{weights}->[$n]) {
+                push @w, $params{weights}->[$n];
+            }
+            else {
+                push @w, 0;
+            }
+        }
+        $params{weights} = \@w;
+    }
+    elsif ($params{weights}->@* > $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            push @w, $params{weights}->[$n];
+        }
+        $params{weights} = \@w;
+    }
+    if ($params{groups}->@* < $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            if (defined $params{groups}->[$n]) {
+                push @w, $params{groups}->[$n];
+            }
+            else {
+                push @w, 0;
+            }
+        }
+        $params{groups} = \@w;
+    }
+    elsif ($params{groups}->@* > $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            push @w, $params{groups}->[$n];
+        }
+        $params{groups} = \@w;
+    }
+
     unless ($params{pool}) {
         $c->flash(error => 'Please choose a pool');
         return $c->redirect_to('/');
@@ -443,7 +483,7 @@ post '/cycle' => sub ($c) {
     undef $midi_out;
     open_midi();
     send_program_changes();
-    $c->flash(message => "Fluidsynth $pid cycled");
+    $c->flash(message => 'Fluidsynth cycled');
     $c->redirect_to('/');
 };
 
@@ -623,9 +663,9 @@ stopped
   </label>
 
   <label>Weights
-    <input type="text" name="weights" value="<%= $edit->{weights} %>" placeholder="e.g. 1 1 2 space separated" size="22"></label>
+    <input type="text" name="weights" value="<%= $edit->{weights} %>" placeholder="eg: 1 1 2 space separated" size="22"></label>
   <label>Groups
-    <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="e.g. 0 0 1 space separated" size="22"></label>
+    <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="eg: 0 0 1 space separated" size="22"></label>
 
   <p></p>
   % if (defined $edit->{edit_part}) {
