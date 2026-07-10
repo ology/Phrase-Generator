@@ -571,7 +571,7 @@ stopped
 <p></p>
 % if ($opt->{port} =~ /fluid/) {
 <form method="post" action="/cycle" class="block">
-  <button type="submit">Enable</button>
+  <button type="submit">Fluid</button>
 </form>
 % }
 <div class="form-container">
