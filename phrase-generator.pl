@@ -37,7 +37,8 @@ GetOptionsFromArray(\@ARGV, \%opt,
 store {}, SAVED unless -e SAVED;
 my $saved_parts = retrieve(SAVED);
 
-my @known_ports = ( known_ports()->@*, 'fluidsynth' );
+my @known_ports = known_ports()->@*;
+push @known_ports, 'fluidsynth' unless grep { $_ =~ /fluid/i } @known_ports;
 
 my %edit; # edit a part
 
