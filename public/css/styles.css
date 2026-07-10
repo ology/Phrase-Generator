@@ -45,6 +45,10 @@ input[type="checkbox"] {
 .active_border {
     border: 1px solid #993;
 }
+.rounded_border {
+    border: 1px solid #668;
+    border-radius: 6px;
+}
 .form-container {
   display: flex;
   flex-direction: row; /* Aligns items side-by-side */
