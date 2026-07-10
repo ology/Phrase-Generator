@@ -59,7 +59,7 @@ my $beat_count = 0;  # how many beats?
 my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
-my ($fluid_out, $fluid_in);
+my ($fluid_out, $fluid_in); # for open2()
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -478,7 +478,7 @@ post '/cycle' => sub ($c) {
     system('pkill -9 fluidsynth');
     my @cmd = ('fluidsynth');
     # push @cmd, '-v' if $opt{verbose};
-    push @cmd, ('-m', 'coremidi', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2'); #, '-g', '2.0'
+    push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
     my $pid = open2($fluid_out, $fluid_in, @cmd);
     $fluid_in->autoflush(1);
     undef $midi_out;
