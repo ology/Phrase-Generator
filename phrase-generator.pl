@@ -816,15 +816,15 @@ stopped
   <label>MIDI port
     <select name="port">
       % for my $n (@$ports) {
-        <option value="<%= $n %>"><%= $n %></option>
+        <option value="<%= $n %>" <%= $n == $opt->{port} ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
   <label>BPM <input type="number" name="bpm" value="<%= $opt->{bpm} %>" size="4"></label>
   <label>Key
     <select name="base">
-      % for my $k ($choices->{keys_order}->@*) {
-        <option value="<%= $choices->{keys}{$k} %>" <%= $edit->{base} && $k eq $edit->{base} ? 'selected' : '' %>><%= $k %></option>
+      % for my $n ($choices->{keys_order}->@*) {
+        <option value="<%= $choices->{keys}{$n} %>" <%= $n eq $opt->{base} ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
