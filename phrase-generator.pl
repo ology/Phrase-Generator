@@ -11,7 +11,6 @@ use MIDI::RtMidi::FFI::Device ();
 use MIDI::Util qw(dura_size midi_dump scale_names);
 use Music::Scales qw(get_scale_MIDI);
 use Music::VoicePhrase ();
-use Proc::Find qw(find_proc);
 use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 
@@ -487,7 +486,7 @@ post '/cycle' => sub ($c) {
     # push @cmd, '-v' if $opt{verbose};
     push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
     my $pid = open2($fluid_out, $fluid_in, @cmd);
-    $in->autoflush(1);
+    $fluid_in->autoflush(1);
     undef $midi_out;
     open_midi();
     send_program_changes();
