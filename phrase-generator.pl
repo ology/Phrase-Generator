@@ -50,7 +50,7 @@ $SIG{INT} = sub {
 };
 
 my $clock_interval; # time / bpm / ppqn, recomputed whenever bpm changes
-my $sixteenth = CLOCKS_PER_BEAT / DIVISIONS; # clocks per 16th-note
+my $tick_div = CLOCKS_PER_BEAT / DIVISIONS; # clocks per 16th-note
 
 recompute_timing();
 
@@ -59,7 +59,7 @@ my $beat_count = 0;  # how many beats?
 my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
-my ($fluid_out, $fluid_in); # for open2()
+my ($out, $in);      # for open2()
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -285,7 +285,7 @@ sub start_sequencer {
     $timer_id = Mojo::IOLoop->recurring($clock_interval => sub {
         $midi_out->clock;
         $ticks++;
-        if ($ticks % $sixteenth == 0) {
+        if ($ticks % $tick_div == 0) {
             off($_, $beat_count) for @parts;
             for my $part (@parts) {
                 populate($part, $beat_count) if needs_more($part, $beat_count);
@@ -484,8 +484,8 @@ post '/cycle' => sub ($c) {
     my @cmd = ('fluidsynth');
     # push @cmd, '-v' if $opt{verbose};
     push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
-    my $pid = open2($fluid_out, $fluid_in, @cmd);
-    $fluid_in->autoflush(1);
+    my $pid = open2($out, $in, @cmd);
+    $in->autoflush(1);
     undef $midi_out;
     open_midi();
     send_program_changes();
