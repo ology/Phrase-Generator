@@ -16,7 +16,7 @@ use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 
 use constant {
-    DIVISIONS       => 4,  # divisions of a quarter-note into 16ths
+    DIVISIONS       => 4, #12, # divisions of a quarter-note
     CLOCKS_PER_BEAT => 24, # PPQN
     SAVED           => 'saved-units.dat',
 };
@@ -76,8 +76,10 @@ my %choices = (
         'wn dhn hn qn' => [qw(wn dhn hn qn)],
         'hn dqn qn en' => [qw(hn dqn qn en)],
         'qn den en sn' => [qw(qn den en sn)],
-        # 'thn qn'       => [qw(thn qn)],
+        # 'thn hn'       => [qw(thn hn)],
         # 'tqn qn'       => [qw(tqn qn)],
+        # 'ten en'       => [qw(ten en)],
+        # 'ten'          => [qw(ten)],
     },
     pitches => {
         '1 octave'  => sub ($base, $octave, $scale) {
@@ -221,7 +223,7 @@ sub populate ($p, $count) {
         $tally += $on;
         push @ons, $tally;
         $note->{on}  = $count + $tally - $on;
-        $note->{off} = $note->{off} = $note->{on} + $on * $p->gate; # scale the DURATION
+        $note->{off} = $note->{on} + $on * $p->gate; # scale the DURATION
     }
     $p->onsets([ map { $count + $_ } @ons ]);
     say 'Onsets: ', ddc $p->onsets if $opt{verbose};
