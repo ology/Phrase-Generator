@@ -748,8 +748,8 @@ stopped
     <th></th>
     <th></th>
 </tr>
-  % for my $i (0 .. $#$parts) {
-    % my $p = $parts->[$i];
+  % my $i = 0;
+  % for my $p (sort { $a->{channel} <=> $b->{channel} || $a->{patch} <=> $b->{patch} } @$parts) {
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
@@ -782,6 +782,7 @@ stopped
       </div>
       </td>
     </tr>
+  % $i++;
   % }
 </table> <!-- child3 -->
 
