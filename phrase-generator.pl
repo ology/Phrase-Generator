@@ -367,6 +367,7 @@ post '/parts' => sub ($c) {
 
     my %params;
     $params{channel}      = ($v->{channel} // 0) + 0;
+    $params{name}         = $v->{name} || 'part';
     $params{patch}        = $v->{patch} // 0;
     $params{gate}         = $v->{gate} // 1;
     $params{motif_num}    = ($v->{motif_num} || 4) + 0;
@@ -602,6 +603,9 @@ stopped
     </select>
   </label>
 
+  <label>Part name
+    <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
+
   <label>Patch
     <select name="patch">
       % for my $n (sort keys $choices->{patch}->%*) {
@@ -727,6 +731,7 @@ stopped
 <table border="0" cellpadding="0" cellspacing="0" id="child3">
   <tr>
     <th class="middle_align">•</th>
+    <th class="middle_align">Name</th>
     <th class="middle_align">Channel</th>
     <th class="middle_align">Patch</th>
     <th class="middle_align">Motifs</th>
@@ -740,6 +745,7 @@ stopped
   % for my $p (sort { $a->{channel} <=> $b->{channel} || $a->{patch} <=> $b->{patch} } @$parts) {
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
+      <td class="middle_align blue"><%= $p->{name} %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
       <td class="middle_align blue"><%= $choices->{number}{ $p->{patch} } %></td>
       <td class="middle_align blue"><%= $p->{motif_num} %></td>
@@ -750,6 +756,7 @@ stopped
       <div class="form-container">
         <form method="post" action="/edit">
           <input type="hidden" name="channel" value="<%= $p->{channel} %>">
+          <input type="hidden" name="name" value="<%= $p->{name} %>">
           <input type="hidden" name="patch" value="<%= $p->{patch} %>">
           <input type="hidden" name="gate" value="<%= $p->{gate} %>">
           <input type="hidden" name="motif_num" value="<%= $p->{motif_num} %>">
