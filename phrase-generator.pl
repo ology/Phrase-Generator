@@ -563,10 +563,6 @@ __DATA__
   <tr>
     <td>
 
-<table border="0" cellpadding="0" cellspacing="0" id="child1">
-  <tr>
-    <td>
-
 <h2>Engage</h2>
 Status:
 % if ($running) {
@@ -589,8 +585,8 @@ stopped
   </form>
 </div>
 
-    </td> <!-- child1 -->
-    <td> <!-- child1 -->
+    </td> <!-- top -->
+    <td> <!-- top -->
 
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
@@ -691,18 +687,10 @@ stopped
   % }
 </form>
 
-    </td> <!-- child1 -->
-  </tr> <!-- child1 -->
-</table> <!-- child1 -->
-
   </td> <!-- top -->
 </tr> <!-- top -->
 <tr> <!-- top -->
   <td> <!-- top -->
-
-<table border="0" cellpadding="0" cellspacing="0" id="child2">
-  <tr>
-    <td>
 
 <h2>Units [<%= scalar @$parts %>]</h2>
 % if (@$parts) {
@@ -731,8 +719,8 @@ stopped
   </form>
 </div>
 
-    </td> <!-- child1 -->
-    <td class="left_pad3"> <!-- child1 -->
+    </td> <!-- top -->
+    <td> <!-- top -->
 
 <p></p>
 
@@ -804,20 +792,16 @@ stopped
 </div>
 % }
 
-    </td> <!-- child2 -->
-  </tr> <!-- child2 -->
-</table> <!-- child2 -->
-
     </td> <!-- top -->
   </tr> <!-- top -->
   <tr> <!-- top -->
     <td> <!-- top -->
 
-<table border="0" cellpadding="0" cellspacing="0" id="child4">
-  <tr>
-    <td>
-
 <h2>Settings</h2>
+
+    </td> <!-- top -->
+    <td> <!-- top -->
+
 <form method="post" action="/settings">
   <label>MIDI port
     <select name="port">
@@ -841,10 +825,6 @@ stopped
 % if ($running) {
   <p><em>Settings locked while sequencer running</em></p>
 % }
-
-    </td> <!-- child4 -->
-  </tr> <!-- child4 -->
-</table> <!-- child4 -->
 
     </td> <!-- top -->
   </tr> <!-- top -->

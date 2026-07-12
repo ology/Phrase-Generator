@@ -72,3 +72,6 @@ input[type="checkbox"] {
   width: 100%;             /* Fills the parent's full width */
   box-sizing: border-box;  /* Includes padding/borders inside the 100% width */
 }
+.left_align {
+    text-align: left;
+}
