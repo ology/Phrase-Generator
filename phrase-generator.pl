@@ -478,6 +478,11 @@ post '/edit' => sub ($c) {
     $c->redirect_to('/');
 } => 'edit';
 
+post '/cancel' => sub ($c) {
+    %edit = ();
+    $c->redirect_to('/');
+} => 'cancel';
+
 post '/delete' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
@@ -702,12 +707,15 @@ stopped
   <p></p>
   % if (defined $edit->{edit_part}) {
   <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
-  <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
-  <a href="<%= url_for('index') %>" type="button">Cancel</a>
+    <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
+  </form>
+  <form method="post" action="<%= url_for('cancel') %>">
+    <button type="submit">Cancel</a>
+  </form>
   % } else {
-  <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
+    <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
+  </form>
   % }
-</form>
 
   </td> <!-- top -->
 </tr> <!-- top -->
