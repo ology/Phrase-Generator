@@ -621,6 +621,9 @@ stopped
 <h2>Affix Unit</h2>
 % }
 <form method="post" action="/parts" <%= keys %$edit ? 'class=active_border' : '' %>>
+  <label>Part name
+    <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
+
   <label>Channel
     <select name="channel">
       % for my $n (0 .. 15) {
@@ -628,9 +631,6 @@ stopped
       % }
     </select>
   </label>
-
-  <label>Part name
-    <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
 
   <label>Patch
     <select name="patch">
