@@ -185,7 +185,7 @@ sub open_midi {
     catch ($e) { warn 'Not a Mac' if $opt{verbose} }
     sleep(1); # band-aid the race condition
     try { $midi_out->open_port_by_name(qr/\Q$opt{port}/i) }
-    catch ($e) { die "Can't open MIDI port: $opt{port}\n" }
+    catch ($e) { die "Can't open MIDI port $opt{port}\n" }
     say "Sending MIDI to $opt{port} at $opt{bpm} BPM" if $opt{verbose};
     $midi_out->start;
 }
@@ -496,7 +496,13 @@ post '/cycle' => sub ($c) {
     my $pid = open2($fluid_out, $fluid_in, @cmd);
     $fluid_in->autoflush(1);
     undef $midi_out;
-    open_midi();
+    try {
+        open_midi();
+    }
+    catch ($e) {
+        $c->flash(error => "Can't cycle fluidsynth");
+        return $c->redirect_to('/');
+    }
     send_program_changes();
     $c->flash(message => 'Fluidsynth cycled');
     $c->redirect_to('/');
