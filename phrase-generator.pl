@@ -82,6 +82,7 @@ my %choices = (
         'thn'          => [qw(thn)],
         'tqn'          => [qw(tqn)],
         'ten'          => [qw(ten)],
+        'tsn'          => [qw(tsn)],
         'tqn hn'       => [qw(tqn hn)],
         'ten qn'       => [qw(ten qn)],
         'tsn en'       => [qw(tsn en)],
