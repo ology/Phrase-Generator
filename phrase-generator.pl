@@ -703,7 +703,7 @@ stopped
   % if (defined $edit->{edit_part}) {
   <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
   <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
-  <a href="url_for('index')" type="button">Cancel</a>
+  <a href="<%= url_for('index') %>" type="button">Cancel</a>
   % } else {
   <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
   % }
