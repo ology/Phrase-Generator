@@ -695,7 +695,7 @@ stopped
     </select>
   </label>
 
-  <label>Pool
+  <label>Duration pool
     <select name="pool">
       % for my $n (sort keys $choices->{pool}->%*) {
         <option value="<%= $n %>" <%= $edit->{pool} && $n eq $edit->{pool} ? 'selected' : '' %>><%= $n %></option>
