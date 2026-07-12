@@ -826,7 +826,7 @@ stopped
   <label>MIDI port
     <select name="port">
       % for my $n (@$ports) {
-        <option value="<%= $n %>" <%= $n eq $opt->{port} ? 'selected' : '' %>><%= $n %></option>
+        <option value="<%= $n %>" <%= $n =~ /$opt->{port}/ ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
