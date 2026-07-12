@@ -709,31 +709,32 @@ stopped
 
 <h2>Units [<%= scalar @$parts %>]</h2>
 % if (@$parts) {
-<form method="post" action="/clear">
+<form method="post" action="/clear" class="center">
   <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
 </form>
 
-<button id="loadModalBtn">Load</button>
-<div id="load_modal" title="Load Unit Set" class="display_none">
-  <form method="post" action="/load">
-    <select name="load_parts">
-% for my $n (sort keys %$saved) {
-      <option value="<%= $n %>"><%= $n %></option>
-% }
-    </select>
-    <p></p>
-    <button type="submit" name="submit" value="submit">Load</button>
-  </form>
+<div class="center">
+  <button id="loadModalBtn">Load</button>
+  <div id="load_modal" title="Load Unit Set" class="display_none">
+    <form method="post" action="/load">
+      <select name="load_parts">
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>"><%= $n %></option>
+  % }
+      </select>
+      <p></p>
+      <button type="submit" name="submit" value="submit">Load</button>
+    </form>
+  </div>
+  <button id="saveModalBtn">Save</button>
+  <div id="save_modal" title="Save Unit Set" class="display_none">
+    <form method="post" action="/save">
+      <label>Name <input type="text" name="save_parts" class="box_size"></label>
+      <p></p>
+      <button type="submit" name="save" value="submit">Save</button>
+    </form>
+  </div>
 </div>
-<button id="saveModalBtn">Save</button>
-<div id="save_modal" title="Save Unit Set" class="display_none">
-  <form method="post" action="/save">
-    <label>Name <input type="text" name="save_parts" class="box_size"></label>
-    <p></p>
-    <button type="submit" name="save" value="submit">Save</button>
-  </form>
-</div>
-
     </td> <!-- top -->
     <td> <!-- top -->
 
