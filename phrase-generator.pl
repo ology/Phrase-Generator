@@ -36,9 +36,6 @@ GetOptionsFromArray(\@ARGV, \%opt,
 store {}, SAVED unless -e SAVED;
 my $saved_parts = retrieve(SAVED);
 
-my @known_ports = known_ports()->@*;
-push @known_ports, 'fluidsynth' unless grep { $_ =~ /fluid/i } @known_ports;
-
 my %edit; # edit a part
 
 # redefine what happens on ^C, same as the original script
@@ -327,6 +324,8 @@ sub known_ports {
 
 get '/' => sub ($c) {
     my %used_channels;
+    my @known_ports = known_ports()->@*;
+    push @known_ports, 'fluidsynth' unless grep { $_ =~ /fluid/i } @known_ports;
     for my $i (0 .. $#parts) {
         # don't block the channel of the unit currently being edited
         next if defined $edit{edit_part} && $i == $edit{edit_part};
