@@ -677,15 +677,6 @@ stopped
   <label>Gate amount
     <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00"></label>
 
-  <label>Motifs
-    <select name="motif_num">
-      % for my $n (1 .. 16) {
-        % my $selected = defined $edit->{motif_num} ? $edit->{motif_num} : '4';
-        <option value="<%= $n %>" <%= ($edit->{motif_num} && $n == $edit->{motif_num}) || ($n == $selected) ? 'selected' : '' %>><%= $n %></option>
-      % }
-    </select>
-  </label>
-
   <label>Measure size
     <select name="size">
       % for my $n (qw(1 2 2.5 3 3.5), (4 .. 16)) {
@@ -707,6 +698,15 @@ stopped
     <input type="text" name="weights" value="<%= $edit->{weights} %>" placeholder="eg: 1 2 1 space separated" size="22"></label>
   <label>Group size
     <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="eg: 1 1 3 space separated" size="22"></label>
+
+  <label>Motifs
+    <select name="motif_num">
+      % for my $n (1 .. 16) {
+        % my $selected = defined $edit->{motif_num} ? $edit->{motif_num} : '4';
+        <option value="<%= $n %>" <%= ($edit->{motif_num} && $n == $edit->{motif_num}) || ($n == $selected) ? 'selected' : '' %>><%= $n %></option>
+      % }
+    </select>
+  </label>
 
   <p></p>
   % if (defined $edit->{edit_part}) {
