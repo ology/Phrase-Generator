@@ -21,7 +21,7 @@ use constant {
 };
 
 my %opt = (
-    port    => 'fluid',
+    port    => 'fluidsynth',
     bpm     => 60,
     base    => 'C',
     verbose => 1,
