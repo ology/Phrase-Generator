@@ -13,6 +13,7 @@ use Music::Scales qw(get_scale_MIDI);
 use Music::VoicePhrase ();
 use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
+use Scalar::Util qw(refaddr);
 
 use constant {
     DIVISIONS       => 4, #12, # divisions of a quarter-note
@@ -56,12 +57,18 @@ my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in);      # for open2()
+my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of currently sounding note
 
 my %choices = (
     patch       => midi_dump('patch2number'),
     number      => midi_dump('number2patch'),
     scale_names => scale_names(),
     pool        => {
+        'wn'           => [qw(wn)],
+        'hn'           => [qw(hn)],
+        'qn'           => [qw(qn)],
+        'en'           => [qw(en)],
+        'sn'           => [qw(sn)],
         'wn hn'        => [qw(wn hn)],
         'hn qn'        => [qw(hn qn)],
         'qn en'        => [qw(qn en)],
@@ -238,6 +245,8 @@ sub on ($p, $count) {
                 $n->{pitch},
                 $n->{velocity},
             );
+            # this note now owns this pitch on this channel
+            $voice_owner{ $p->{channel} }{ $n->{pitch} } = refaddr($n);
         }
         else {
             warn "WARNING: No note to play?\n\n";
@@ -246,14 +255,29 @@ sub on ($p, $count) {
     }
 }
 
+# sub off ($p, $count) {
+#     for my $n (grep { $_->{off} <= $count } $p->queue->@*) {
+#         say 'OFF: ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
+#         $midi_out->note_off(
+#             $p->{channel},
+#             $n->{pitch},
+#             0
+#         );
+#     }
+# }
 sub off ($p, $count) {
-    for my $n (grep { $_->{off} <= $count } $p->queue->@*) {
-        say 'OFF: ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
-        $midi_out->note_off(
-            $p->{channel},
-            $n->{pitch},
-            0
-        );
+    for my $n (grep { $_->{off} <= $count && !$_->{off_sent} } $p->queue->@*) {
+        $n->{off_sent} = 1; # don't re-check this note again
+
+        my $owner = $voice_owner{ $p->{channel} }{ $n->{pitch} } // -1;
+        if ($owner == refaddr($n)) {
+            say 'OFF: ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
+            $midi_out->note_off($p->{channel}, $n->{pitch}, 0);
+            delete $voice_owner{$p->{channel}}{$n->{pitch}};
+        }
+        else {
+            say 'SKIPPED OFF (pitch reused): ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
+        }
     }
 }
 
