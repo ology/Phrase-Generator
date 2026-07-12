@@ -149,6 +149,7 @@ my %choices = (
         name
         patch
         gate
+        volume
         motif_num
         scale
         octave
@@ -258,16 +259,6 @@ sub on ($p, $count) {
     }
 }
 
-# sub off ($p, $count) {
-#     for my $n (grep { $_->{off} <= $count } $p->queue->@*) {
-#         say 'OFF: ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
-#         $midi_out->note_off(
-#             $p->{channel},
-#             $n->{pitch},
-#             0
-#         );
-#     }
-# }
 sub off ($p, $count) {
     for my $n (grep { $_->{off} <= $count && !$_->{off_sent} } $p->queue->@*) {
         $n->{off_sent} = 1; # don't re-check this note again
@@ -397,6 +388,7 @@ post '/parts' => sub ($c) {
     $params{name}         = $v->{name} || 'part';
     $params{patch}        = $v->{patch} // 0;
     $params{gate}         = $v->{gate} // 1;
+    $params{volume}       = $v->{volume} // 100;
     $params{motif_num}    = ($v->{motif_num} || 4) + 0;
     $params{scale}        = $v->{scale} || 'major';
     $params{octave}       = ($v->{octave} // 4) + 0;
@@ -675,8 +667,11 @@ stopped
     </select>
   </label>
 
+  <label>Volume
+    <input type="number" name="volume" value="<%= $edit->{volume} || '100' %>" placeholder="" size="4"></label>
+
   <label>Gate amount
-    <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00"></label>
+    <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00" size="4"></label>
 
   <label>Measure size
     <select name="size">
