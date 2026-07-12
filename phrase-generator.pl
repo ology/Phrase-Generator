@@ -402,7 +402,6 @@ post '/parts' => sub ($c) {
     ) ];
     $params{intervals_name} = $v->{intervals};
     $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
-    # say ddc \%params;
 
     # TODO modularize this:
     if ($params{weights}->@* < $params{pool}->@*) {
