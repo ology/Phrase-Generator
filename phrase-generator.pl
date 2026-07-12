@@ -668,7 +668,7 @@ stopped
   </label>
 
   <label>Volume
-    <input type="number" name="volume" value="<%= $edit->{volume} || '100' %>" placeholder="" size="4"></label>
+    <input type="number" name="volume" value="<%= $edit->{volume} || '100' %>" placeholder="" size="4" min="0" max="127"></label>
 
   <label>Gate amount
     <input type="number" name="gate" value="<%= $edit->{gate} || '1.00' %>" placeholder="" step="0.01" min="0.00" max="2.00" size="4"></label>
