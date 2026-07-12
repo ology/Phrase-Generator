@@ -146,6 +146,7 @@ my %choices = (
     },
     parameters => [qw(
         channel
+        name
         patch
         gate
         motif_num
