@@ -568,7 +568,7 @@ __DATA__
   <h3 class="green left_pad6"><%= $msg %></h3>
 % }
 
-<table border="0" cellpadding="0" cellspacing="0" id="top">
+<table border="1" cellpadding="0" cellspacing="0" id="top">
   <tr>
     <td>
 
@@ -739,6 +739,7 @@ stopped
     </td> <!-- top -->
     <td> <!-- top -->
 
+<p></p>
 <table border="0" cellpadding="0" cellspacing="0" id="child3">
   <tr>
     <th class="middle_align">•</th>
