@@ -387,7 +387,7 @@ get '/' => sub ($c) {
         ports         => \@known_ports,
     );
     $c->render('index');
-};
+} => 'index';
 
 post '/settings' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
@@ -403,7 +403,7 @@ post '/settings' => sub ($c) {
 
     $c->flash(message => 'Settings saved');
     $c->redirect_to('/');
-};
+} => 'settings';
 
 post '/parts' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't add while running
@@ -450,25 +450,25 @@ post '/parts' => sub ($c) {
         $c->flash(message => 'Unit ' . scalar(@parts) . ' appended');
     }
     $c->redirect_to('/');
-};
+} => 'parts';
 
 post '/clear' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id;
     @parts = ();
     %edit = ();
     $c->redirect_to('/');
-};
+} => 'clear';
 
 post '/start' => sub ($c) {
     eval { start_sequencer() };
     $c->flash(error => $@) if $@;
     $c->redirect_to('/');
-};
+} => 'start';
 
 post '/stop' => sub ($c) {
     stop_sequencer();
     $c->redirect_to('/');
-};
+} => 'stop';
 
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
@@ -476,7 +476,7 @@ post '/edit' => sub ($c) {
     $edit{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
     $c->flash(message => 'Now editing part ' . ($edit{edit_part} + 1));
     $c->redirect_to('/');
-};
+} => 'edit';
 
 post '/delete' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
@@ -506,7 +506,7 @@ post '/cycle' => sub ($c) {
     send_program_changes();
     $c->flash(message => 'Fluidsynth cycled');
     $c->redirect_to('/');
-};
+} => 'cycle';
 
 post '/save' => sub ($c) {
     my $v = $c->req->params->to_hash;
@@ -520,7 +520,7 @@ post '/save' => sub ($c) {
     store $saved_parts, SAVED;
     $c->flash(message => 'Unit set saved as ' . $v->{save_parts});
     $c->redirect_to('/');
-};
+} => 'save';
 
 post '/load' => sub ($c) {
     my $v = $c->req->params->to_hash;
@@ -528,7 +528,7 @@ post '/load' => sub ($c) {
     push @parts, Music::VoicePhrase->new($_) for $saved_parts->{ $v->{load_parts} }->@*;
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
-};
+} => 'load';
 
 app->start;
 
@@ -587,15 +587,15 @@ stopped
 % }
 <p></p>
 % if ($opt->{port} =~ /fluid/) {
-<form method="post" action="/cycle" class="block">
+<form method="post" action="<%= url_for('cycle') %>" class="block">
   <button type="submit">Fluid</button>
 </form>
 % }
 <div class="form-container">
-  <form method="post" action="/start" class="block">
+  <form method="post" action="<%= url_for('start') %>" class="block">
     <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
   </form>
-  <form method="post" action="/stop" class="block">
+  <form method="post" action="<%= url_for('stop') %>" class="block">
     <button type="submit" <%= $running ? '' : 'disabled' %>>⏹</button>
   </form>
 </div>
@@ -608,7 +608,7 @@ stopped
 % } else {
 <h2>Affix Unit</h2>
 % }
-<form method="post" action="/parts" <%= keys %$edit ? 'class=active_border' : '' %>>
+<form method="post" action="<%= url_for('parts') %>" <%= keys %$edit ? 'class=active_border' : '' %>>
   <label>Part name
     <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
 
@@ -703,6 +703,7 @@ stopped
   % if (defined $edit->{edit_part}) {
   <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
   <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
+  <a href="url_for('index')" type="button">Cancel</a>
   % } else {
   <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
   % }
@@ -715,14 +716,14 @@ stopped
 
 <h2>Units [<%= scalar @$parts %>]</h2>
 % if (@$parts) {
-<form method="post" action="/clear" class="center">
+<form method="post" action="<%= url_for('clear') %>" class="center">
   <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
 </form>
 
 <div class="center">
   <button id="loadModalBtn">Load</button>
   <div id="load_modal" title="Load Unit Set" class="display_none">
-    <form method="post" action="/load">
+    <form method="post" action="<%= url_for('load') %>">
       <select name="load_parts">
   % for my $n (sort keys %$saved) {
         <option value="<%= $n %>"><%= $n %></option>
@@ -734,7 +735,7 @@ stopped
   </div>
   <button id="saveModalBtn">Save</button>
   <div id="save_modal" title="Save Unit Set" class="display_none">
-    <form method="post" action="/save">
+    <form method="post" action="<%= url_for('save') %>">
       <label>Name <input type="text" name="save_parts" class="box_size"></label>
       <p></p>
       <button type="submit" name="save" value="submit">Save</button>
@@ -772,7 +773,7 @@ stopped
       <td class="middle_align blue"><%= join(' ', $p->{pool}->@*) %></td>
       <td class="middle_align blue">
       <div class="form-container">
-        <form method="post" action="/edit">
+        <form method="post" action="<%= url_for('edit') %>">
           <input type="hidden" name="channel" value="<%= $p->{channel} %>">
           <input type="hidden" name="name" value="<%= $p->{name} %>">
           <input type="hidden" name="patch" value="<%= $p->{patch} %>">
@@ -788,7 +789,7 @@ stopped
           <input type="hidden" name="intervals" value="<%= $p->{intervals_name} %>">
           <button type="submit" name="edit_part" value="<%= $i %>">Edit</button>
         </form>
-        <form method="post" action="/delete">
+        <form method="post" action="<%= url_for('delete') %>">
           <button type="submit" name="delete_part" value="<%= $i %>" onclick="if(!confirm('Delete part <%= $i + 1 %>?')) return false;">Delete</button>
         </form>
 
@@ -805,7 +806,7 @@ stopped
 
 <button id="loadModalBtn">Load</button>
 <div id="load_modal" title="Load Unit Set" class="display_none">
-  <form method="post" action="/load">
+  <form method="post" action="<%= url_for('load') %>">
     <select name="load_parts">
 % for my $n (sort keys %$saved) {
       <option value="<%= $n %>"><%= $n %></option>
@@ -829,7 +830,7 @@ stopped
     </td> <!-- top -->
     <td> <!-- top -->
 
-<form method="post" action="/settings">
+<form method="post" action="<%= url_for('settings') %>">
   <label>MIDI port
     <select name="port">
       % for my $n (@$ports) {
