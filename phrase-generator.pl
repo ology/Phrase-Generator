@@ -194,6 +194,8 @@ sub send_program_changes {
     for my $part (@parts) {
         $midi_out->program_change($part->{channel}, $part->{patch})
             if defined $part->{patch};
+        $midi_out->control_change($part->{channel}, 7, $part->{volume})
+            if defined $part->{volume};
     }
 }
 
@@ -291,11 +293,11 @@ sub start_sequencer {
     return if defined $timer_id; # already running
     die "No parts configured\n" unless @parts;
 
-    open_midi();
-    send_program_changes();
-
     $ticks      = 0;
     $beat_count = 0;
+
+    open_midi();
+    send_program_changes();
 
     for my $part (@parts) {
         $part->index(0);
