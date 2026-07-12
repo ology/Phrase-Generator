@@ -742,7 +742,7 @@ stopped
     <th></th>
 </tr>
   % my $i = 0;
-  % for my $p (sort { $a->{channel} <=> $b->{channel} || $a->{patch} <=> $b->{patch} } @$parts) {
+  % for my $p (sort { $a->{channel} <=> $b->{channel} || $a->{name} cmp $b->{name} } @$parts) {
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
       <td class="middle_align blue"><%= $p->{name} %></td>
