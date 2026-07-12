@@ -401,7 +401,7 @@ post '/parts' => sub ($c) {
         $opt{base}, $params{octave}, $params{scale}
     ) ];
     $params{intervals_name} = $v->{intervals};
-    $params{intervals} = $choices{intervals}{ $v->{intervals} || '' };
+    $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
     # say ddc \%params;
 
     # TODO modularize this:
