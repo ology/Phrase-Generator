@@ -840,7 +840,7 @@ stopped
   </label>
   <label><input type="checkbox" name="verbose" value="1" <%= $opt->{verbose} ? 'checked' : '' %>> verbose</label>
   <p></p>
-  <button type="submit" <%= $running ? 'disabled' : '' %>>Save Settings</button>
+  <button type="submit" <%= $running ? 'disabled' : '' %>>Save</button>
 </form>
 % if ($running) {
   <p><em>Settings locked while sequencer running</em></p>
