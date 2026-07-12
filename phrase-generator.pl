@@ -568,7 +568,7 @@ __DATA__
   <h3 class="green left_pad6"><%= $msg %></h3>
 % }
 
-<table border="1" cellpadding="0" cellspacing="0" id="top">
+<table border="0" cellpadding="0" cellspacing="0" id="top">
   <tr>
     <td>
 
