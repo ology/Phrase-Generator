@@ -703,10 +703,10 @@ stopped
     </select>
   </label>
 
-  <label>Weights
-    <input type="text" name="weights" value="<%= $edit->{weights} %>" placeholder="eg: 1 1 2 space separated" size="22"></label>
-  <label>Groups
-    <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="eg: 0 0 1 space separated" size="22"></label>
+  <label>Likelyhood
+    <input type="text" name="weights" value="<%= $edit->{weights} %>" placeholder="eg: 1 2 1 space separated" size="22"></label>
+  <label>Group size
+    <input type="text" name="groups" value="<%= $edit->{groups} %>" placeholder="eg: 1 1 3 space separated" size="22"></label>
 
   <p></p>
   % if (defined $edit->{edit_part}) {
