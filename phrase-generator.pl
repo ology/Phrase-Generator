@@ -16,7 +16,7 @@ use Storable qw(retrieve store);
 use Scalar::Util qw(refaddr);
 
 use constant {
-    DIVISIONS       => 4, #12, # divisions of a quarter-note
+    DIVISIONS       => 12, # divisions of a quarter-note
     CLOCKS_PER_BEAT => 24, # PPQN
     SAVED           => 'saved-units.dat',
 };
@@ -79,10 +79,12 @@ my %choices = (
         'wn dhn hn qn' => [qw(wn dhn hn qn)],
         'hn dqn qn en' => [qw(hn dqn qn en)],
         'qn den en sn' => [qw(qn den en sn)],
-        # 'thn hn'       => [qw(thn hn)],
-        # 'tqn qn'       => [qw(tqn qn)],
-        # 'ten en'       => [qw(ten en)],
-        # 'ten'          => [qw(ten)],
+        'thn'          => [qw(thn)],
+        'tqn'          => [qw(tqn)],
+        'ten'          => [qw(ten)],
+        'thn hn'       => [qw(thn hn)],
+        'tqn qn'       => [qw(tqn qn)],
+        'ten en'       => [qw(ten en)],
     },
     pitches => {
         '1 octave'  => sub ($base, $octave, $scale) {
