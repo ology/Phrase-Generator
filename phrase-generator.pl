@@ -82,9 +82,9 @@ my %choices = (
         'thn'          => [qw(thn)],
         'tqn'          => [qw(tqn)],
         'ten'          => [qw(ten)],
-        'thn hn'       => [qw(thn hn)],
-        'tqn qn'       => [qw(tqn qn)],
-        'ten en'       => [qw(ten en)],
+        'tqn hn'       => [qw(tqn hn)],
+        'ten qn'       => [qw(ten qn)],
+        'tsn en'       => [qw(tsn en)],
     },
     pitches => {
         '1 octave'  => sub ($base, $octave, $scale) {
