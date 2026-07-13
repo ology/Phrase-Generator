@@ -444,6 +444,7 @@ post '/parts' => sub ($c) {
         push @parts, Music::VoicePhrase->new(%params); #, verbose => 1);
         $c->flash(message => 'Unit ' . scalar(@parts) . ' appended');
     }
+
     $c->redirect_to('/');
 } => 'parts';
 
