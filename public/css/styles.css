@@ -45,6 +45,9 @@ input[type="checkbox"] {
 .blue {
     color: #89f;
 }
+.white {
+    color: #f5f6fa;
+}
 .active_border {
     border: 1px solid #993;
 }
@@ -62,11 +65,17 @@ input[type="checkbox"] {
 .left_pad3 {
     padding-left: 3em;
 }
+.right_pad {
+    padding-right: 0.3em;
+}
 .center {
     text-align: center;
 }
 .display_none {
     display: none;
+}
+.decoration_none {
+    text-decoration: none;
 }
 .box_size {
   width: 100%;             /* Fills the parent's full width */

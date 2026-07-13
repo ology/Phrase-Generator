@@ -570,7 +570,7 @@ __DATA__
 					<div class="bar-10"></div>
 				</div>
 				<main>
-					<h1>MIDI Phrase Generator</h1>
+					<h1 class="right_pad">MIDI Phrase Generator</h1>
 
 % if (my $err = flash('error')) {
   <h3 class="red left_pad6"><strong>Error:</strong> <%= $err %></h3>
@@ -708,7 +708,7 @@ stopped
   % if (defined $edit->{edit_part}) {
     <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
     <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
-    <a href="<%= url_for('cancel') %>" class="right">Cancel</a>
+    <a href="<%= url_for('cancel') %>" class="right white decoration_none">Cancel</a>
   </form>
   % } else {
     &nbsp; <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
