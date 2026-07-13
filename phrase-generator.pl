@@ -424,9 +424,11 @@ post '/parts' => sub ($c) {
     $params{weights}      = [ split /\s+/, ($v->{weights} || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
     $params{groups}       = [ split /\s+/, ($v->{groups}  || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
     $params{pitches_name} = $v->{pitches};
-    $params{pitches}      = [ $choices{pitches}{ $v->{pitches} || '1 octave' }->(
-        $opt{base}, $params{octave}, $params{scale}
-    ) ];
+    $params{pitches}      = [
+        $choices{pitches}{ $v->{pitches} || '1 octave' }->(
+            $opt{base}, $params{octave}, $params{scale}
+        )
+    ];
     $params{intervals_name} = $v->{intervals};
     $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
 
