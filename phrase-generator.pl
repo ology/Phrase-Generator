@@ -420,7 +420,6 @@ post '/parts' => sub ($c) {
     ) ];
     $params{intervals_name} = $v->{intervals};
     $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
-    say ddc \%params;
 
     $params{weights} = normalize_to_pool($params{weights}, $params{pool});
     $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
@@ -460,9 +459,7 @@ post '/stop' => sub ($c) {
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
-    say ddc \%edit;
     $edit{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
-    say ddc \%edit;
     $c->flash(message => 'Now editing part ' . ($edit{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
