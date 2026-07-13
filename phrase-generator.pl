@@ -58,6 +58,7 @@ my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in);      # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of currently sounding note
+my %muted_parts; # don't play these
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -312,7 +313,10 @@ sub start_sequencer {
         $ticks++;
         if ($ticks % $tick_div == 0) {
             off($_, $beat_count) for @parts;
+            my $i = 0;
             for my $part (@parts) {
+                my $idx = $i++;
+                next if exists $muted_parts{$idx};
                 populate($part, $beat_count) if needs_more($part, $beat_count);
                 on($part, $beat_count);
             }
@@ -380,6 +384,7 @@ get '/' => sub ($c) {
         used_channels => \%used_channels,
         saved         => $saved_parts,
         ports         => \@known_ports,
+        muted         => \%muted_parts,
     );
     $c->render('index');
 } => 'index';
@@ -446,6 +451,7 @@ post '/clear' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id;
     @parts = ();
     %edit = ();
+    %muted_parts = ();
     $c->redirect_to('/');
 } => 'clear';
 
@@ -524,5 +530,24 @@ post '/load' => sub ($c) {
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
 } => 'load';
+
+post '/mute' => sub ($c) {
+    return $c->redirect_to('/') if defined $timer_id; # don't change while running
+    my $v = $c->req->params->to_hash;
+    my $msg;
+    for my $key (keys %$v) {
+        next unless $key =~ /^mute_part_(\d+)$/;
+        my $idx = $1;
+        if ($v->{$key}) {
+            $muted_parts{$idx} = 1;
+            $msg = 'Muted part ' . ($idx + 1);
+        } else {
+            delete $muted_parts{$idx};
+            $msg = 'Unmuted part ' . ($idx + 1);
+        }
+    }
+    $c->flash(message => $msg);
+    $c->redirect_to('/');
+};
 
 app->start;

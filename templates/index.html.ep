@@ -217,10 +217,9 @@ stopped
     <th class="middle_align">Octave</th>
     <th class="middle_align">Pool</th>
     <th></th>
-    <th></th>
 </tr>
   % my $i = 0;
-  % for my $p (sort { $a->{channel} <=> $b->{channel} || $a->{name} cmp $b->{name} } @$parts) {
+  % for my $p (@$parts) {
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
       <td class="middle_align blue"><%= $p->{name} %></td>
@@ -251,8 +250,13 @@ stopped
         <form method="post" action="<%= url_for('delete') %>">
           <button type="submit" name="delete_part" value="<%= $i %>" onclick="if(!confirm('Delete part <%= $i + 1 %>?')) return false;">Delete</button>
         </form>
-
       </div>
+      </td>
+      <td class="middle_align blue">
+        <form action="/mute" method="post">
+          <input type="hidden" name="mute_part_<%= $i %>" value="0">
+          <label><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
+        </form>
       </td>
     </tr>
   % $i++;
@@ -347,7 +351,7 @@ $(document).ready(function() {
       }
     }
   });
-  $("#loadModalBtn").on("click", function() {
+  $("#loadModalBtn").click(function() {
     $("#load_modal").dialog("open");
   });
   $("#save_modal").dialog({
@@ -361,7 +365,7 @@ $(document).ready(function() {
       }
     }
   });
-  $("#saveModalBtn").on("click", function() {
+  $("#saveModalBtn").click(function() {
     $("#save_modal").dialog("open");
   });
 });
