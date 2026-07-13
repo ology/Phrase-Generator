@@ -411,26 +411,26 @@ post '/parts' => sub ($c) {
     my $v = $c->req->params->to_hash;
 
     my %params;
-    $params{channel}      = ($v->{channel} // 0) + 0;
-    $params{name}         = $v->{name} || 'part';
-    $params{patch}        = $v->{patch} // 0;
-    $params{gate}         = $v->{gate} // 1;
-    $params{volume}       = $v->{volume} // 100;
-    $params{motif_num}    = $v->{motif_num} || 4;
-    $params{scale}        = $v->{scale} || 'major';
-    $params{octave}       = $v->{octave} // 4;
-    $params{size}         = $v->{size} || 4;
-    $params{pool}         = $choices{pool}{ $v->{pool} || 'wn' };
-    $params{weights}      = [ split /\s+/, ($v->{weights} || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
-    $params{groups}       = [ split /\s+/, ($v->{groups}  || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
-    $params{pitches_name} = $v->{pitches};
-    $params{pitches}      = [
+    $params{channel}        = ($v->{channel} // 0) + 0;
+    $params{name}           = $v->{name} || 'part';
+    $params{patch}          = $v->{patch} // 0;
+    $params{gate}           = $v->{gate} // 1;
+    $params{volume}         = $v->{volume} // 100;
+    $params{motif_num}      = $v->{motif_num} || 4;
+    $params{scale}          = $v->{scale} || 'major';
+    $params{octave}         = $v->{octave} // 4;
+    $params{size}           = $v->{size} || 4;
+    $params{pool}           = $choices{pool}{ $v->{pool} || 'wn' };
+    $params{weights}        = [ split /\s+/, ($v->{weights} || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
+    $params{groups}         = [ split /\s+/, ($v->{groups}  || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
+    $params{intervals_name} = $v->{intervals};
+    $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
+    $params{pitches_name}   = $v->{pitches};
+    $params{pitches}        = [
         $choices{pitches}{ $v->{pitches} || '1 octave' }->(
             $opt{base}, $params{octave}, $params{scale}
         )
     ];
-    $params{intervals_name} = $v->{intervals};
-    $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
 
     $params{weights} = normalize_to_pool($params{weights}, $params{pool});
     $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
