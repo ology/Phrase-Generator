@@ -478,7 +478,7 @@ post '/edit' => sub ($c) {
     $c->redirect_to('/');
 } => 'edit';
 
-post '/cancel' => sub ($c) {
+get '/cancel' => sub ($c) {
     %edit = ();
     $c->redirect_to('/');
 } => 'cancel';
@@ -706,14 +706,12 @@ stopped
 
   <p></p>
   % if (defined $edit->{edit_part}) {
-  <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
+    <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
     <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
-  </form>
-  <form method="post" action="<%= url_for('cancel') %>">
-    <button type="submit">Cancel</a>
+    <a href="<%= url_for('cancel') %>" class="right">Cancel</a>
   </form>
   % } else {
-    <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
+    &nbsp; <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
   </form>
   % }
 

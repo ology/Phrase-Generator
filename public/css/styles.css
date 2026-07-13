@@ -75,3 +75,6 @@ input[type="checkbox"] {
 .left_align {
     text-align: left;
 }
+.right {
+    float: right;
+}
