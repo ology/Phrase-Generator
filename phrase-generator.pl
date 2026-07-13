@@ -422,11 +422,6 @@ post '/parts' => sub ($c) {
     $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
     say ddc \%params;
 
-    unless ($params{pool}) {
-        $c->flash(error => 'Please choose a pool');
-        return $c->redirect_to('/');
-    }
-
     $params{weights} = normalize_to_pool($params{weights}, $params{pool});
     $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
 
