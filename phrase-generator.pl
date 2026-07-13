@@ -293,11 +293,11 @@ sub start_sequencer {
     return if defined $timer_id; # already running
     die "No parts configured\n" unless @parts;
 
-    $ticks      = 0;
-    $beat_count = 0;
-
     open_midi();
     send_program_changes();
+
+    $ticks      = 0;
+    $beat_count = 0;
 
     for my $part (@parts) {
         $part->index(0);
@@ -429,14 +429,54 @@ post '/parts' => sub ($c) {
     ) ];
     $params{intervals_name} = $v->{intervals};
     $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
+    say ddc \%params;
 
     unless ($params{pool}) {
         $c->flash(error => 'Please choose a pool');
         return $c->redirect_to('/');
     }
 
-    $params{weights} = pool_relative($params{pool}, $params{weights});
-    $params{groups}  = pool_relative($params{pool}, $params{groups});
+    # $params{weights} = pool_relative($params{pool}, $params{weights});
+    # $params{groups}  = pool_relative($params{pool}, $params{groups});
+    # TODO modularize this:
+    if ($params{weights}->@* < $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            if (defined $params{weights}->[$n]) {
+                push @w, $params{weights}->[$n];
+            }
+            else {
+                push @w, 0;
+            }
+        }
+        $params{weights} = \@w;
+    }
+    elsif ($params{weights}->@* > $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            push @w, $params{weights}->[$n];
+        }
+        $params{weights} = \@w;
+    }
+    if ($params{groups}->@* < $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            if (defined $params{groups}->[$n]) {
+                push @w, $params{groups}->[$n];
+            }
+            else {
+                push @w, 0;
+            }
+        }
+        $params{groups} = \@w;
+    }
+    elsif ($params{groups}->@* > $params{pool}->@*) {
+        my @w;
+        for my $n (0 .. $params{pool}->$#*) {
+            push @w, $params{groups}->[$n];
+        }
+        $params{groups} = \@w;
+    }
 
     if (defined $v->{edit_part}) {
         my $part = $parts[ $v->{edit_part} ];
@@ -473,7 +513,9 @@ post '/stop' => sub ($c) {
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
+    say ddc \%edit;
     $edit{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
+    say ddc \%edit;
     $c->flash(message => 'Now editing part ' . ($edit{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
@@ -708,7 +750,7 @@ stopped
   % if (defined $edit->{edit_part}) {
     <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
     <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
-    <a href="<%= url_for('cancel') %>" class="right white decoration_none">Cancel</a>
+    <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
   </form>
   % } else {
     &nbsp; <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>

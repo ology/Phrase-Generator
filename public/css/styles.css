@@ -87,3 +87,6 @@ input[type="checkbox"] {
 .right {
     float: right;
 }
+.height100 {
+    height: 100%;
+}
