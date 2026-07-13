@@ -250,13 +250,11 @@ stopped
         <form method="post" action="<%= url_for('delete') %>">
           <button type="submit" name="delete_part" value="<%= $i %>" onclick="if(!confirm('Delete part <%= $i + 1 %>?')) return false;">Delete</button>
         </form>
-      </div>
-      </td>
-      <td class="middle_align blue">
         <form action="/mute" method="post">
           <input type="hidden" name="mute_part_<%= $i %>" value="0">
           <label><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
         </form>
+      </div>
       </td>
     </tr>
   % $i++;
