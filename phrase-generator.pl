@@ -421,8 +421,8 @@ post '/parts' => sub ($c) {
     $params{octave}       = $v->{octave} // 4;
     $params{size}         = $v->{size} || 4;
     $params{pool}         = $choices{pool}{ $v->{pool} || 'wn' };
-    $params{weights}      = [ split /\s+/, ($v->{weights} || (join ' ', ('0') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
-    $params{groups}       = [ split /\s+/, ($v->{groups}  || (join ' ', ('0') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
+    $params{weights}      = [ split /\s+/, ($v->{weights} || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
+    $params{groups}       = [ split /\s+/, ($v->{groups}  || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr ];
     $params{pitches_name} = $v->{pitches};
     $params{pitches}      = [ $choices{pitches}{ $v->{pitches} || '1 octave' }->(
         $opt{base}, $params{octave}, $params{scale}
