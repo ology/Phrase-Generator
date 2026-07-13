@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>MIDI Phrase Generator</title>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="date=no">
+
+  <!-- Core jQuery -->
+  <script src="https://code.jquery.com/jquery-4.0.0.min.js"></script>
+  <!-- jQuery UI CSS -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.2/themes/base/jquery-ui.min.css" rel="stylesheet">
+  <!-- jQuery UI JavaScript -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.14.2/jquery-ui.min.js"></script>
+
+  <link rel="stylesheet" type="text/css" href="css/styles.css">
+  <link rel="stylesheet" type="text/css" href="css/classic.css"> <!-- LCARS -->
+
+</head>
+<body>
+<%= content %>
+</body>
+</html>
