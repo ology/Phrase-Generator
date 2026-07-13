@@ -342,24 +342,15 @@ sub known_ports {
     ];
 }
 
-sub pool_relative ($pool, $param) {
-    my @w;
-    if ($param->@* < $pool->@*) {
+sub normalize_to_pool ($arr, $pool) {
+    if ($arr->@* != $pool->@*) {
+        my @w;
         for my $n (0 .. $pool->$#*) {
-            if (defined $param->[$n]) {
-                push @w, $param->[$n];
-            }
-            else {
-                push @w, 0;
-            }
+            push @w, $arr->[$n] // 0;
         }
+        $arr = \@w;
     }
-    elsif ($param->@* > $pool->@*) {
-        for my $n (0 .. $pool->$#*) {
-            push @w, $param->[$n];
-        }
-    }
-    return \@w;
+    return $arr;
 }
 
 
@@ -436,47 +427,8 @@ post '/parts' => sub ($c) {
         return $c->redirect_to('/');
     }
 
-    # $params{weights} = pool_relative($params{pool}, $params{weights});
-    # $params{groups}  = pool_relative($params{pool}, $params{groups});
-    # TODO modularize this:
-    if ($params{weights}->@* < $params{pool}->@*) {
-        my @w;
-        for my $n (0 .. $params{pool}->$#*) {
-            if (defined $params{weights}->[$n]) {
-                push @w, $params{weights}->[$n];
-            }
-            else {
-                push @w, 0;
-            }
-        }
-        $params{weights} = \@w;
-    }
-    elsif ($params{weights}->@* > $params{pool}->@*) {
-        my @w;
-        for my $n (0 .. $params{pool}->$#*) {
-            push @w, $params{weights}->[$n];
-        }
-        $params{weights} = \@w;
-    }
-    if ($params{groups}->@* < $params{pool}->@*) {
-        my @w;
-        for my $n (0 .. $params{pool}->$#*) {
-            if (defined $params{groups}->[$n]) {
-                push @w, $params{groups}->[$n];
-            }
-            else {
-                push @w, 0;
-            }
-        }
-        $params{groups} = \@w;
-    }
-    elsif ($params{groups}->@* > $params{pool}->@*) {
-        my @w;
-        for my $n (0 .. $params{pool}->$#*) {
-            push @w, $params{groups}->[$n];
-        }
-        $params{groups} = \@w;
-    }
+    $params{weights} = normalize_to_pool($params{weights}, $params{pool});
+    $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
 
     if (defined $v->{edit_part}) {
         my $part = $parts[ $v->{edit_part} ];
