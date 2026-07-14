@@ -503,11 +503,12 @@ post '/delete' => sub ($c) {
 
 post '/cycle' => sub ($c) {
     stop_sequencer();
-    # XXX WTF?
+
     my $pids = find_proc(name => FLUID);
     kill 'TERM', @$pids if @$pids;
     sleep 1;
     kill 'KILL', @$pids if @$pids;
+
     my @cmd = (FLUID);
     # push @cmd, '-v' if $opt{verbose};
     push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
