@@ -227,7 +227,7 @@ disabled
     <th></th>
 </tr>
   % my $i = 0;
-  % for my $p (@$parts) {
+  % for my $p (@$parts) { # NOTE: Do not sort
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
       <td class="middle_align blue"><%= $p->{name} %></td>
