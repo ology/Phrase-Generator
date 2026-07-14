@@ -371,8 +371,7 @@ sub clamp ($n, $min, $max) {
 
 get '/' => sub ($c) {
     my %used_channels;
-    my @known_ports = known_ports()->@*;
-    push @known_ports, FLUID unless grep { $_ =~ /fluid/i } @known_ports;
+    my @known_ports = (known_ports()->@*, FLUID);
     for my $i (0 .. $#parts) {
         # don't block the channel of the unit currently being edited
         next if defined $edit_part{edit_part} && $i == $edit_part{edit_part};
