@@ -4,14 +4,14 @@
 			<div class="left-frame">
 				<a href="#" id="topBtn"><span class="hop">screen</span> top</a>
 				<div>
-					<div class="panel-3">03<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
-					<div class="panel-4">04<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
-					<div class="panel-5">05<span class="hop">-<%= substr rand(), 2, 4 %>D</span></div>
-					<div class="panel-6">06<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
-					<div class="panel-7">07<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
-					<div class="panel-8">08<span class="hop">-<%= substr rand(), 2, 5 %></span></div>
-					<div class="panel-9">09<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
-					<div class="panel-10">10<span class="hop">-<%= substr rand(), 2, 2 %></span></div>
+					<div class="panel-3">01<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
+					<div class="panel-4">02<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
+					<div class="panel-5">03<span class="hop">-<%= substr rand(), 2, 4 %>D</span></div>
+					<div class="panel-6">04<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
+					<div class="panel-7">05<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
+					<div class="panel-8">06<span class="hop">-<%= substr rand(), 2, 5 %></span></div>
+					<div class="panel-9">07<span class="hop">-<%= substr rand(), 2, 6 %></span></div>
+					<div class="panel-10">08<span class="hop">-<%= substr rand(), 2, 2 %></span></div>
 				</div>
 			</div>
 			<div class="right-frame">
@@ -243,6 +243,7 @@ disabled
           <input type="hidden" name="name" value="<%= $p->{name} %>">
           <input type="hidden" name="patch" value="<%= $p->{patch} %>">
           <input type="hidden" name="gate" value="<%= $p->{gate} %>">
+          <input type="hidden" name="volume" value="<%= $p->{volume} %>">
           <input type="hidden" name="motif_num" value="<%= $p->{motif_num} %>">
           <input type="hidden" name="scale" value="<%= $p->{scale} %>">
           <input type="hidden" name="octave" value="<%= $p->{octave} %>">
