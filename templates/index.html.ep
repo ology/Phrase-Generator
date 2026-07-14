@@ -49,7 +49,7 @@ Fluidsynth:
   % if ($fluid) {
 <span class="green">enabled</span>
   % } else {
-not enabled
+disabled
   % }
 % }
 <p></p>
