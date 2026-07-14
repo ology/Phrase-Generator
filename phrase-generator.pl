@@ -366,7 +366,7 @@ get '/' => sub ($c) {
         next if defined $edit{edit_part} && $i == $edit{edit_part};
         $used_channels{ $parts[$i]->{channel} } = 1;
     }
-    my $fluid = proc_exists(name=> FLUID);
+    my $fluid = proc_exists(name => FLUID);
     $c->stash(
         opt           => \%opt,
         parts         => \@parts,
