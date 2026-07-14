@@ -299,6 +299,8 @@ sub start_sequencer {
     $ticks      = 0;
     $beat_count = 0;
 
+    %voice_owner = ();
+
     for my $part (@parts) {
         $part->index(0);
         $part->queue([]);
@@ -326,6 +328,7 @@ sub stop_sequencer {
     Mojo::IOLoop->remove($timer_id);
     undef $timer_id;
     panic_all();
+    %voice_owner = ();
     try {
         $midi_out->stop;
         $midi_out->close_port;
@@ -484,9 +487,10 @@ post '/delete' => sub ($c) {
     my $v = $c->req->params->to_hash;
     splice(@parts, $v->{delete_part}, 1);
     %edit_part = ();
+    %muted_parts = ();
     $c->flash(message => 'Deleted part ' . ($v->{delete_part} + 1));
     $c->redirect_to('/');
-};
+} => 'delete';
 
 post '/cycle' => sub ($c) {
     stop_sequencer();
