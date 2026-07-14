@@ -43,6 +43,9 @@ Status:
 % } else {
 stopped
 % }
+% if ($opt->{port} =~ /fluidsynth/) {
+<p><%= $fluid ? 'Fluidsynth enabled' : 'Fluidsynth not enabled' %></p>
+% }
 <p></p>
 % if ($opt->{port} =~ /fluid/) {
 <form method="post" action="<%= url_for('cycle') %>" class="block">

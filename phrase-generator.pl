@@ -14,6 +14,7 @@ use Music::VoicePhrase ();
 use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 use Scalar::Util qw(refaddr);
+use Proc::Find qw(proc_exists);
 
 use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
@@ -374,6 +375,7 @@ get '/' => sub ($c) {
         next if defined $edit{edit_part} && $i == $edit{edit_part};
         $used_channels{ $parts[$i]->{channel} } = 1;
     }
+    my $fluid = proc_exists(name=> 'fluidsynth');
     $c->stash(
         opt           => \%opt,
         parts         => \@parts,
@@ -384,6 +386,7 @@ get '/' => sub ($c) {
         saved         => $saved_parts,
         ports         => \@known_ports,
         muted         => \%muted_parts,
+        fluid         => $fluid,
     );
     $c->render('index');
 } => 'index';
