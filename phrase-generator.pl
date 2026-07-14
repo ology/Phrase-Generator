@@ -39,7 +39,7 @@ GetOptionsFromArray(\@ARGV, \%opt,
 store {}, SAVED unless -e SAVED;
 my $saved_parts = retrieve(SAVED);
 
-my %edit; # edit a part
+my %edit_part; # edit a part
 
 # redefine what happens on ^C, same as the original script
 $SIG{INT} = sub {
@@ -363,7 +363,7 @@ get '/' => sub ($c) {
     push @known_ports, FLUID unless grep { $_ =~ /fluid/i } @known_ports;
     for my $i (0 .. $#parts) {
         # don't block the channel of the unit currently being edited
-        next if defined $edit{edit_part} && $i == $edit{edit_part};
+        next if defined $edit_part{edit_part} && $i == $edit_part{edit_part};
         $used_channels{ $parts[$i]->{channel} } = 1;
     }
     my $fluid = proc_exists(name => FLUID);
@@ -372,7 +372,7 @@ get '/' => sub ($c) {
         parts    => \@parts,
         choices  => \%choices,
         running  => defined($timer_id) ? 1 : 0,
-        edit     => \%edit,
+        edit     => \%edit_part,
         channels => \%used_channels,
         ports    => \@known_ports,
         saved    => $saved_parts,
@@ -436,7 +436,7 @@ post '/parts' => sub ($c) {
         my $part = $parts[ $v->{edit_part} ];
         splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
         $part->clear_voice;
-        %edit = ();
+        %edit_part = ();
         $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
     }
     else {
@@ -450,7 +450,7 @@ post '/parts' => sub ($c) {
 post '/clear' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id;
     @parts = ();
-    %edit = ();
+    %edit_part = ();
     %muted_parts = ();
     $c->redirect_to('/');
 } => 'clear';
@@ -469,13 +469,13 @@ post '/stop' => sub ($c) {
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
-    $edit{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
-    $c->flash(message => 'Now editing part ' . ($edit{edit_part} + 1));
+    $edit_part{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
+    $c->flash(message => 'Now editing part ' . ($edit_part{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
 
 get '/cancel' => sub ($c) {
-    %edit = ();
+    %edit_part = ();
     $c->redirect_to('/');
 } => 'cancel';
 
@@ -483,7 +483,7 @@ post '/delete' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
     splice(@parts, $v->{delete_part}, 1);
-    %edit = ();
+    %edit_part = ();
     $c->flash(message => 'Deleted part ' . ($v->{delete_part} + 1));
     $c->redirect_to('/');
 };
