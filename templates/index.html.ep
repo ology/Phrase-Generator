@@ -212,7 +212,6 @@ stopped
     <th class="middle_align">Name</th>
     <th class="middle_align">Channel</th>
     <th class="middle_align">Patch</th>
-    <th class="middle_align">Motifs</th>
     <th class="middle_align">Scale</th>
     <th class="middle_align">Octave</th>
     <th class="middle_align">Pool</th>
@@ -225,7 +224,6 @@ stopped
       <td class="middle_align blue"><%= $p->{name} %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
       <td class="middle_align blue"><%= $choices->{number}{ $p->{patch} } %></td>
-      <td class="middle_align blue"><%= $p->{motif_num} %></td>
       <td class="middle_align blue"><%= $p->{scale} %></td>
       <td class="middle_align blue"><%= $p->{octave} %></td>
       <td class="middle_align blue"><%= join(' ', $p->{pool}->@*) %></td>
