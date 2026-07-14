@@ -6,3 +6,5 @@ requires 'Music::Scales';
 requires 'Music::VoicePhrase';
 requires 'Proc::Find';
 requires 'IPC::Open2';
+requires 'Scalar::Util';
+requires 'Proc::Find';
