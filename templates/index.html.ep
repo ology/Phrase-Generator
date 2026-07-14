@@ -55,14 +55,17 @@ disabled
 <p></p>
 % if ($opt->{port} =~ /fluid/) {
 <form method="post" action="<%= url_for('cycle') %>" class="block">
+  <%= csrf_field %>
   <button type="submit">Fluid</button>
 </form>
 % }
 <div class="form-container">
   <form method="post" action="<%= url_for('start') %>" class="block">
+    <%= csrf_field %>
     <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
   </form>
   <form method="post" action="<%= url_for('stop') %>" class="block">
+    <%= csrf_field %>
     <button type="submit" <%= $running ? '' : 'disabled' %>>⏹</button>
   </form>
 </div>
@@ -76,6 +79,7 @@ disabled
 <h2>Affix Unit</h2>
 % }
 <form method="post" action="<%= url_for('parts') %>" <%= keys %$edit ? 'class=active_border' : '' %>>
+  <%= csrf_field %>
   <label>Part name
     <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
 
@@ -171,11 +175,10 @@ disabled
     <input type="hidden" name="edit_part" value="<%= $edit->{edit_part} %>">
     <button type="submit" <%= $running ? 'disabled' : '' %>>Update</button>
     <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
-  </form>
   % } else {
     &nbsp; <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
-  </form>
   % }
+  </form>
 
   </td> <!-- top -->
 </tr> <!-- top -->
@@ -185,6 +188,7 @@ disabled
 <h2>Units [<%= scalar @$parts %>]</h2>
 % if (@$parts) {
 <form method="post" action="<%= url_for('clear') %>" class="center">
+  <%= csrf_field %>
   <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
 </form>
 
@@ -192,6 +196,7 @@ disabled
   <button id="loadModalBtn">Load</button>
   <div id="load_modal" title="Load Unit Set" class="display_none">
     <form method="post" action="<%= url_for('load') %>">
+      <%= csrf_field %>
       <select name="load_parts">
   % for my $n (sort keys %$saved) {
         <option value="<%= $n %>"><%= $n %></option>
@@ -204,6 +209,7 @@ disabled
   <button id="saveModalBtn">Save</button>
   <div id="save_modal" title="Save Unit Set" class="display_none">
     <form method="post" action="<%= url_for('save') %>">
+      <%= csrf_field %>
       <label>Name <input type="text" name="save_parts" class="box_size"></label>
       <p></p>
       <button type="submit" name="save" value="submit">Save</button>
@@ -239,6 +245,7 @@ disabled
       <td class="middle_align blue">
       <div class="form-container">
         <form method="post" action="<%= url_for('edit') %>">
+          <%= csrf_field %>
           <input type="hidden" name="channel" value="<%= $p->{channel} %>">
           <input type="hidden" name="name" value="<%= $p->{name} %>">
           <input type="hidden" name="patch" value="<%= $p->{patch} %>">
@@ -256,9 +263,11 @@ disabled
           <button type="submit" name="edit_part" value="<%= $i %>">Edit</button>
         </form>
         <form method="post" action="<%= url_for('delete') %>">
+          <%= csrf_field %>
           <button type="submit" name="delete_part" value="<%= $i %>" onclick="if(!confirm('Delete part <%= $i + 1 %>?')) return false;">Delete</button>
         </form>
         <form action="/mute" method="post">
+          <%= csrf_field %>
           <input type="hidden" name="mute_part_<%= $i %>" value="0">
           <label><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
         </form>
@@ -276,6 +285,7 @@ disabled
 <button id="loadModalBtn">Load</button>
 <div id="load_modal" title="Load Unit Set" class="display_none">
   <form method="post" action="<%= url_for('load') %>">
+    <%= csrf_field %>
     <select name="load_parts">
 % for my $n (sort keys %$saved) {
       <option value="<%= $n %>"><%= $n %></option>
@@ -300,6 +310,7 @@ disabled
     <td> <!-- top -->
 
 <form method="post" action="<%= url_for('settings') %>">
+  <%= csrf_field %>
   <label>MIDI port
     <select name="port">
       % for my $n (@$ports) {
