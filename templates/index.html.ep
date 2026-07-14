@@ -43,8 +43,14 @@ Status:
 % } else {
 stopped
 % }
+<p></p>
 % if ($opt->{port} =~ /fluidsynth/) {
-<p><%= $fluid ? 'Fluidsynth enabled' : 'Fluidsynth not enabled' %></p>
+Fluidsynth:
+  % if ($fluid) {
+<span class="green">enabled</span>
+  % } else {
+not enabled
+  % }
 % }
 <p></p>
 % if ($opt->{port} =~ /fluid/) {
