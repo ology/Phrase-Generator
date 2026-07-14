@@ -238,12 +238,13 @@ disabled
 </tr>
   % my $i = 0;
   % for my $p (@$parts) { # NOTE: Do not re-sort
+  %   my $patch = $choices->{number}{ $p->{patch} };
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
       <td class="middle_align blue"><%= $p->{name} %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
-      <td class="middle_align blue"><%= $choices->{number}{ $p->{patch} } %></td>
-      <td class="middle_align blue"><%= $p->{scale} %></td>
+      <td class="middle_align blue"><%= length($patch) > 10 ? substr($patch, 0, 10) . '...' : $patch %></td>
+      <td class="middle_align blue"><%= length($p->{scale}) > 10 ? substr($p->{scale}, 0, 10) . '...' : $p->{scale} %></td>
       <td class="middle_align blue"><%= $p->{octave} %></td>
       <td class="middle_align blue"><%= join(' ', $p->{pool}->@*) %></td>
       <td class="middle_align blue">
