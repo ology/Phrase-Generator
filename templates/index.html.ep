@@ -247,7 +247,7 @@ disabled
   %   my $patch = $choices->{number}{ $p->{patch} };
     <tr>
       <td class="middle_align blue"><%= $i + 1 %></td>
-      <td class="middle_align blue"><%= $p->{name} %></td>
+      <td class="middle_align blue"><%= ellipsisify($p->{name}) %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
       <td class="middle_align blue"><%= ellipsisify($patch) %></td>
       <td class="middle_align blue"><%= ellipsisify($p->{scale}) %></td>
