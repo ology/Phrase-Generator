@@ -58,10 +58,10 @@ my $beat_count = 0;  # how many beats?
 my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
-my ($fluid_out, $fluid_in);      # for open2()
+my ($fluid_out, $fluid_in); # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of currently sounding note
 my %muted_parts; # don't play these
-my %bag;  # $bag{ refaddr($p) } = [ shuffled remaining indices ]
+my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -253,7 +253,7 @@ sub populate ($p, $count) {
     say "$count => ", ddc $motif if $opt{verbose};
     $p->queue([
         map { +{
-            pitch    => $p->voice->rand,
+            pitch    => (rand() < 0.5 ? undef : $p->voice->rand),  # % chance of a rest
             duration => $_,
             velocity => velocity(-10, 10, 110),
         } } @$motif
@@ -279,7 +279,7 @@ sub on ($p, $count) {
     if (defined $p->onsets->[$p->index] && $p->onsets->[$p->index] == $count) {
         my $n = $p->queue->[$p->index];
         say 'ON: ', $p->{channel}, ', ', $p->index, ", $count, ", ddc $n if $opt{verbose};
-        if ($n) {
+        if ($n && defined $n->{pitch}) {
             $midi_out->note_on(
                 $p->{channel},
                 $n->{pitch},
@@ -288,9 +288,10 @@ sub on ($p, $count) {
             # this note now owns this pitch on this channel
             $voice_owner{ $p->{channel} }{ $n->{pitch} } = refaddr($n);
         }
-        else {
+        elsif (!$n) {
             warn "WARNING: No note to play?\n\n";
         }
+        # else: it's a rest — silently skip
         $p->increment_index;
     }
 }
@@ -298,6 +299,7 @@ sub on ($p, $count) {
 sub off ($p, $count) {
     for my $n (grep { $_->{off} <= $count && !$_->{off_sent} } $p->queue->@*) {
         $n->{off_sent} = 1; # don't re-check this note again
+        next unless defined $n->{pitch}; # rests have nothing to turn off
 
         my $owner = $voice_owner{ $p->{channel} }{ $n->{pitch} } // -1;
         if ($owner == refaddr($n)) {
