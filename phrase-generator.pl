@@ -2,7 +2,7 @@
 
 use Mojolicious::Lite -signatures;
 
-use feature qw(say try signatures);
+use feature qw(say try);
 no warnings qw(experimental::try experimental::signatures);
 
 use Data::Dumper::Compact qw(ddc);
