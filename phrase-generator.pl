@@ -61,6 +61,7 @@ my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in);      # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of currently sounding note
 my %muted_parts; # don't play these
+my %bag;  # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -220,8 +221,25 @@ sub velocity ($min, $max, $offset) {
     return clamp($v, 0, 127);
 }
 
+# reshuffle once the bag is empty
+sub next_motif_index ($p) {
+    my $motifs = $p->motifs;
+    my $key    = refaddr($p);
+    if (!$bag{$key} || !$bag{$key}->@*) {
+        my @indices = (0 .. $motifs->$#*);
+        # Fisher-Yates shuffle
+        for (my $i = $#indices; $i > 0; $i--) {
+            my $j = int rand($i + 1);
+            @indices[$i, $j] = @indices[$j, $i];
+        }
+        $bag{$key} = \@indices;
+    }
+    return shift $bag{$key}->@*;
+}
+
 sub populate ($p, $count) {
-    my $motif = $p->motifs->[int rand $p->motifs->@*]; # TODO something clever?
+    my $idx   = next_motif_index($p);
+    my $motif = $p->motifs->[$idx];
     say "$count => ", ddc $motif if $opt{verbose};
     $p->queue([
         map { +{
