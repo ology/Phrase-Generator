@@ -209,13 +209,11 @@ disabled
   <div id="load_modal" title="Load Unit Set" class="display_none">
     <form method="post" action="<%= url_for('load') %>">
       <%= csrf_field %>
-      <select name="load_parts">
+      <select name="load_parts" onchange="this.form.submit()">
   % for my $n (sort keys %$saved) {
         <option value="<%= $n %>"><%= $n %></option>
   % }
       </select>
-      <p></p>
-      <button type="submit" name="submit" value="submit">Load</button>
     </form>
   </div>
   <button id="saveModalBtn">Save</button>
@@ -299,13 +297,11 @@ disabled
 <div id="load_modal" title="Load Unit Set" class="display_none">
   <form method="post" action="<%= url_for('load') %>">
     <%= csrf_field %>
-    <select name="load_parts">
+    <select name="load_parts" onchange="this.form.submit()">
 % for my $n (sort keys %$saved) {
       <option value="<%= $n %>"><%= $n %></option>
 % }
     </select>
-    <p></p>
-    <button type="submit" name="submit" value="submit">Load</button>
   </form>
 </div>
 % }
