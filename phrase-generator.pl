@@ -20,10 +20,11 @@ use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
     CLOCKS_PER_BEAT => 24, # PPQN
     SAVED           => 'saved-units.dat',
+    FLUID           => 'fluidsynth',
 };
 
 my %opt = (
-    port    => 'fluidsynth',
+    port    => FLUID,
     bpm     => 60,
     base    => 'C',
     verbose => 1,
@@ -359,13 +360,13 @@ sub normalize_to_pool ($arr, $pool) {
 get '/' => sub ($c) {
     my %used_channels;
     my @known_ports = known_ports()->@*;
-    push @known_ports, 'fluidsynth' unless grep { $_ =~ /fluid/i } @known_ports;
+    push @known_ports, FLUID unless grep { $_ =~ /fluid/i } @known_ports;
     for my $i (0 .. $#parts) {
         # don't block the channel of the unit currently being edited
         next if defined $edit{edit_part} && $i == $edit{edit_part};
         $used_channels{ $parts[$i]->{channel} } = 1;
     }
-    my $fluid = proc_exists(name=> 'fluidsynth');
+    my $fluid = proc_exists(name=> FLUID);
     $c->stash(
         opt           => \%opt,
         parts         => \@parts,
@@ -489,8 +490,8 @@ post '/delete' => sub ($c) {
 
 post '/cycle' => sub ($c) {
     stop_sequencer();
-    system('pkill -9 fluidsynth');
-    my @cmd = ('fluidsynth');
+    system('pkill -9 ' . FLUID);
+    my @cmd = (FLUID);
     # push @cmd, '-v' if $opt{verbose};
     push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
     my $pid = open2($fluid_out, $fluid_in, @cmd);
@@ -500,11 +501,11 @@ post '/cycle' => sub ($c) {
         open_midi();
     }
     catch ($e) {
-        $c->flash(error => "Can't cycle fluidsynth");
+        $c->flash(error => "Can't cycle " . FLUID);
         return $c->redirect_to('/');
     }
     send_program_changes();
-    $c->flash(message => 'Fluidsynth cycled');
+    $c->flash(message => FLUID . ' cycled');
     $c->redirect_to('/');
 } => 'cycle';
 
