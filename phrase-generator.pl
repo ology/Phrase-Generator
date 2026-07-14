@@ -173,11 +173,11 @@ my %choices = (
     )],
 );
 
-# Rt-MIDI ###########################################################
-
 helper ellipsisify => sub ($c, $str, $n=10) {
     return length($str) > $n ? substr($str, 0, $n) . '...' : $str;
 };
+
+# Rt-MIDI ###########################################################
 
 sub recompute_timing {
     $clock_interval = 60 / $opt{bpm} / CLOCKS_PER_BEAT;
