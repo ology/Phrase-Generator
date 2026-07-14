@@ -14,7 +14,7 @@ use Music::VoicePhrase ();
 use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 use Scalar::Util qw(refaddr);
-use Proc::Find qw(proc_exists);
+use Proc::Find qw(find_proc proc_exists);
 
 use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
@@ -216,7 +216,8 @@ sub panic_all {
 }
 
 sub velocity ($min, $max, $offset) {
-    return $offset + int(rand($max - $min + 1)) + $min;
+    my $v = $offset + int(rand($max - $min + 1)) + $min;
+    return clamp($v, 0, 127);
 }
 
 sub populate ($p, $count) {
@@ -358,6 +359,14 @@ sub normalize_to_pool ($arr, $pool) {
     return $arr;
 }
 
+sub clamp ($n, $min, $max) {
+    return $min unless defined $n;
+    $n += 0;               # coerce to numeric, avoids "" or non-numeric strings sneaking through
+    return $min if $n < $min;
+    return $max if $n > $max;
+    return $n;
+}
+
 # Routes ###########################################################
 
 get '/' => sub ($c) {
@@ -392,7 +401,7 @@ post '/settings' => sub ($c) {
     $opt{port} = $v->{port} if defined $v->{port};
     $opt{base} = $v->{base} if defined $v->{base};
     if ($v->{bpm}) {
-        $opt{bpm} = $v->{bpm} + 0;
+        $opt{bpm} = clamp($v->{bpm}, 20, 300);
         recompute_timing();
     }
     $opt{verbose} = $v->{verbose} ? 1 : 0;
@@ -407,14 +416,14 @@ post '/parts' => sub ($c) {
     my $v = $c->req->params->to_hash;
 
     my %params;
-    $params{channel}        = ($v->{channel} // 0) + 0;
+    $params{channel}        = clamp($v->{channel}, 0, 15);
     $params{name}           = $v->{name} || 'part';
-    $params{patch}          = $v->{patch} // 0;
-    $params{gate}           = $v->{gate} // 1;
-    $params{volume}         = $v->{volume} // 100;
-    $params{motif_num}      = $v->{motif_num} || 4;
+    $params{patch}          = clamp($v->{patch}, 0, 127);
+    $params{gate}           = clamp($v->{gate}, 0, 2);
+    $params{volume}         = clamp($v->{volume}, 0, 127);
+    $params{motif_num}      = clamp($v->{motif_num} || 4, 1, 16);
     $params{scale}          = $v->{scale} || 'major';
-    $params{octave}         = $v->{octave} // 4;
+    $params{octave}         = clamp($v->{octave} // 4, 0, 9);
     $params{size}           = $v->{size} || 4;
     $params{pool}           = $choices{pool}{ $v->{pool} || 'wn' };
     $params{weights}        = [ split /\s+/,
@@ -494,7 +503,13 @@ post '/delete' => sub ($c) {
 
 post '/cycle' => sub ($c) {
     stop_sequencer();
-    system('pkill -9 ' . FLUID);
+    # XXX WTF?
+    my @pids = find_proc(name => FLUID);
+    @pids = $pids[0]->@*;
+    say ddc \@pids;
+    kill 'TERM', @pids if @pids;
+    sleep 1;
+    kill 'KILL', @pids if @pids;
     my @cmd = (FLUID);
     # push @cmd, '-v' if $opt{verbose};
     push @cmd, ('-m', 'coremidi', '-g', '1.3', $ENV{HOME} . '/Music/soundfont/FluidR3_GM.sf2');
