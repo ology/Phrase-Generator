@@ -315,8 +315,7 @@ sub start_sequencer {
             off($_, $beat_count) for @parts;
             my $i = 0;
             for my $part (@parts) {
-                my $idx = $i++;
-                next if exists $muted_parts{$idx};
+                next if exists $muted_parts{ $i++ };
                 populate($part, $beat_count) if needs_more($part, $beat_count);
                 on($part, $beat_count);
             }
