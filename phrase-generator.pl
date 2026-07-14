@@ -505,9 +505,12 @@ post '/cycle' => sub ($c) {
     stop_sequencer();
 
     my $pids = find_proc(name => FLUID);
-    kill 'TERM', @$pids if @$pids;
-    sleep 1;
-    kill 'KILL', @$pids if @$pids;
+    if (@$pids) {
+        kill 'TERM', @$pids;
+        sleep 1;
+        $pids = [ grep { proc_exists(pid => $_) } @$pids ];
+        kill 'KILL', @$pids if @$pids;
+    }
 
     my @cmd = (FLUID);
     # push @cmd, '-v' if $opt{verbose};
