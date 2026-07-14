@@ -180,7 +180,7 @@ my %choices = (
 );
 
 helper ellipsisify => sub ($c, $str, $n=10) {
-    return length($str) > $n = 3 ? substr($str, 0, $n) . '...' : $str;
+    return length($str) > $n + 3 ? substr($str, 0, $n) . '...' : $str;
 };
 
 # Rt-MIDI ###########################################################
