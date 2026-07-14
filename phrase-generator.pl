@@ -374,8 +374,8 @@ get '/' => sub ($c) {
         running  => defined($timer_id) ? 1 : 0,
         edit     => \%edit,
         channels => \%used_channels,
-        saved    => $saved_parts,
         ports    => \@known_ports,
+        saved    => $saved_parts,
         muted    => \%muted_parts,
         fluid    => $fluid,
     );
