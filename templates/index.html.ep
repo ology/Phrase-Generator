@@ -183,6 +183,7 @@ disabled
     <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
   % }
   </form>
+  <p></p>
   <div class="bar-panel">
     <div class="bar-1"></div>
     <div class="bar-2"></div>
