@@ -59,7 +59,7 @@ my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in); # for open2()
-my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of currently sounding note
+my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
 my %muted_parts; # don't play these
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 
