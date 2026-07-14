@@ -76,7 +76,7 @@ stopped
   <label>Channel
     <select name="channel">
       % for my $n (0 .. 15) {
-        <option value="<%= $n %>" <%= defined $edit->{channel} && $n eq $edit->{channel} ? 'selected' : '' %> <%= $used_channels->{$n} ? 'disabled' : '' %>><%= $n %></option>
+        <option value="<%= $n %>" <%= defined $edit->{channel} && $n eq $edit->{channel} ? 'selected' : '' %> <%= $channels->{$n} ? 'disabled' : '' %>><%= $n %></option>
       % }
     </select>
   </label>

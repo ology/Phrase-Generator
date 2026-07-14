@@ -368,16 +368,16 @@ get '/' => sub ($c) {
     }
     my $fluid = proc_exists(name => FLUID);
     $c->stash(
-        opt           => \%opt,
-        parts         => \@parts,
-        choices       => \%choices,
-        running       => defined($timer_id) ? 1 : 0,
-        edit          => \%edit,
-        used_channels => \%used_channels,
-        saved         => $saved_parts,
-        ports         => \@known_ports,
-        muted         => \%muted_parts,
-        fluid         => $fluid,
+        opt      => \%opt,
+        parts    => \@parts,
+        choices  => \%choices,
+        running  => defined($timer_id) ? 1 : 0,
+        edit     => \%edit,
+        channels => \%used_channels,
+        saved    => $saved_parts,
+        ports    => \@known_ports,
+        muted    => \%muted_parts,
+        fluid    => $fluid,
     );
     $c->render('index');
 } => 'index';
