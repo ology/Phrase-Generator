@@ -455,6 +455,7 @@ post '/parts' => sub ($c) {
     $params{scale}          = $v->{scale} || 'major';
     $params{octave}         = clamp($v->{octave} // 4, 0, 9);
     $params{size}           = $v->{size} || 4;
+    $params{rest_prob}      = clamp($v->{rest_prob}, 0, 1);
     $params{pool}           = $choices{pool}{ $v->{pool} || 'wn' };
     $params{weights}        = [ split /\s+/,
         ($v->{weights} || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr
