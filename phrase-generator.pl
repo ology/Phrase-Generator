@@ -174,9 +174,7 @@ my %choices = (
         weights
         groups
         pitches
-        pitches_name
         intervals
-        intervals_name
     )],
 );
 
