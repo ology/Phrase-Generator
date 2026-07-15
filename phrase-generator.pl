@@ -169,6 +169,7 @@ my %choices = (
         scale
         octave
         size
+        rest_prob
         pool
         weights
         groups
