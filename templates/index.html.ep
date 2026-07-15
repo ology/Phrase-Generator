@@ -298,6 +298,7 @@ disabled
   <form method="post" action="<%= url_for('load') %>">
     <%= csrf_field %>
     <select name="load_parts" onchange="this.form.submit()">
+      <option value="">Select...</option>
 % for my $n (sort keys %$saved) {
       <option value="<%= $n %>"><%= $n %></option>
 % }
