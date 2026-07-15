@@ -60,9 +60,8 @@ my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in); # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
-my %muted_parts; # don't play these
+my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
-my %meta; # $meta{ refaddr($p) } = { tags => [...], color => '...', notes => '...', created => ... }
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -254,7 +253,7 @@ sub populate ($p, $count) {
     say "$count => ", ddc $motif if $opt{verbose};
     $p->queue([
         map { +{
-            pitch    => (rand() < 0.5 ? undef : $p->voice->rand),  # % chance of a rest
+            pitch    => (rand() < $p->rest_prob ? undef : $p->voice->rand),  # % chance of a rest
             duration => $_,
             velocity => velocity(-10, 10, 110),
         } } @$motif
@@ -477,11 +476,6 @@ post '/parts' => sub ($c) {
     if (defined $v->{edit_part}) {
         my $part = $parts[ $v->{edit_part} ];
         splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
-
-        my $new_part = $parts[ $v->{edit_part} ];
-        $meta{ refaddr($new_part) } = $meta{ refaddr($part) } // { created => time() };
-        delete $meta{ refaddr($part) }; # clean up the old refaddr's entry
-
         $part->clear_voice;
         %edit_part = ();
         $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
@@ -500,7 +494,6 @@ post '/clear' => sub ($c) {
     %edit_part = ();
     %muted_parts = ();
     %bag  = ();
-    %meta = ();
     $c->redirect_to('/');
 } => 'clear';
 
@@ -532,10 +525,7 @@ post '/delete' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
     my $part = $parts[ $v->{delete_part} ];
-
-    delete $meta{ refaddr($part) };
-    delete $bag{ refaddr($part) };
-
+    delete $bag{ refaddr($part) }; # remove the played part from our bag
     splice(@parts, $v->{delete_part}, 1);
     %edit_part = ();
     %muted_parts = ();
