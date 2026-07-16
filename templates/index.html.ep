@@ -77,7 +77,7 @@ disabled
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
 % } else {
 <h2></h2>
-<button id="toggle_btn" class="purple">Affix Unit</button>
+<button id="toggle_form" class="purple">Affix Unit</button>
 % }
 
 <div id="formDiv" <%= keys %$edit ? '' : 'class=display_none' %>>
@@ -402,7 +402,7 @@ $(document).ready(function() {
   $("#saveModalBtn").click(function() {
     $("#save_modal").dialog("open");
   });
-  $("#toggle_btn").click(function() {
+  $("#toggle_form").click(function() {
     $("#formDiv").toggle("blind", {}, 500);
   });
 });
