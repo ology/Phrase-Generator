@@ -71,6 +71,9 @@ input[type="checkbox"] {
 .left_pad3 {
     padding-left: 3em;
 }
+.top_pad {
+    padding-top: 0.3em;
+}
 .right_pad {
     padding-right: 0.3em;
 }
@@ -84,8 +87,8 @@ input[type="checkbox"] {
     text-decoration: none;
 }
 .box_size {
-  width: 100%;             /* Fills the parent's full width */
-  box-sizing: border-box;  /* Includes padding/borders inside the 100% width */
+    width: 100%;             /* Fills the parent's full width */
+    box-sizing: border-box;  /* Includes padding/borders inside the 100% width */
 }
 .left_align {
     text-align: left;

@@ -249,7 +249,7 @@ disabled
         <form action="/mute" method="post">
           <%= csrf_field %>
           <input type="hidden" name="mute_part_<%= $i %>" value="0">
-          <label><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
+          <label class="white top_pad"><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
         </form>
       </div>
       </td>
