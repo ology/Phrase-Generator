@@ -26,7 +26,7 @@
 					<h1 class="right_pad">MIDI Phrase Generator</h1>
 
 % if ($running) {
-  <h3>Changes locked while sequencer is running</h3>
+  <h4>Changes locked while sequencer is running</h4>
 % }
 % if (my $err = flash('error')) {
   <h3 class="red left_pad6"><strong>Error:</strong> <%= $err %></h3>
