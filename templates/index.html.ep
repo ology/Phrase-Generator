@@ -36,7 +36,7 @@
   <tr>
     <td>
 
-<h2>Engage</h2>
+<h2></h2>
 Status:
 % if ($running) {
 <span class="red"><strong>RUNNING</strong></span>
