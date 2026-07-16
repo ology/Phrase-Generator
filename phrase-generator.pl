@@ -523,7 +523,7 @@ post '/stop' => sub ($c) {
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
-    $edit_part{$_} = $v->{$_} for ($choices{parameters}->@*, $choices{metadata}->@*, 'edit_part');
+    $edit_part{$_} = $v->{$_} for $choices{parameters}->@*, $choices{metadata}->@*, 'edit_part';
     say ddc \%edit_part;
     $c->flash(message => 'Now editing part ' . ($edit_part{edit_part} + 1));
     $c->redirect_to('/');
