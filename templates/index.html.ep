@@ -209,8 +209,6 @@ disabled
     <th class="left_align left_pad6">Name</th>
     <th class="left_align left_pad6">Channel</th>
     <th class="left_align left_pad6">Patch</th>
-    <th class="left_align left_pad6">Scale</th>
-    <th class="left_align left_pad6">Octave</th>
     <th class="left_align left_pad6">Pool</th>
     <th></th>
 </tr>
@@ -222,8 +220,6 @@ disabled
       <td class="middle_align blue"><%= ellipsisify($p->{name}) %></td>
       <td class="middle_align blue"><%= $p->{channel} %></td>
       <td class="middle_align blue"><%= ellipsisify($patch) %></td>
-      <td class="middle_align blue"><%= ellipsisify($p->{scale}) %></td>
-      <td class="middle_align blue"><%= $p->{octave} %></td>
       <td class="middle_align blue"><%= join(' ', $p->{pool}->@*) %></td>
       <td class="middle_align blue">
       <div class="form-container">
