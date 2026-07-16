@@ -482,7 +482,7 @@ post '/parts' => sub ($c) {
         }
         else {
             %edit_part = ();
-            $c->flash(error => 'That unit no longer exists — edit cancelled');
+            $c->flash(error => 'Unit no longer exists — edit cancelled');
         }
     }
     else {
