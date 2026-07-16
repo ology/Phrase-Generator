@@ -71,7 +71,7 @@ disabled
 </div>
 
     </td> <!-- top -->
-    <td> <!-- top -->
+    <td rowspan="2"> <!-- top -->
 
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
@@ -198,45 +198,7 @@ disabled
     <div class="bar-5"></div>
   </div>
 
-  </td> <!-- top -->
-</tr> <!-- top -->
-<tr> <!-- top -->
-  <td> <!-- top -->
-
-<h2>Units [<%= scalar @$parts %>]</h2>
 % if (@$parts) {
-<form method="post" action="<%= url_for('clear') %>" class="center">
-  <%= csrf_field %>
-  <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
-</form>
-
-<div class="center">
-  <button id="loadModalBtn">Load</button>
-  <div id="load_modal" title="Load Unit Set" class="display_none">
-    <form method="post" action="<%= url_for('load') %>">
-      <%= csrf_field %>
-      <select name="load_parts" onchange="this.form.submit()">
-        <option value="">Select...</option>
-  % for my $n (sort keys %$saved) {
-        <option value="<%= $n %>"><%= $n %></option>
-  % }
-      </select>
-    </form>
-  </div>
-  <button id="saveModalBtn">Save</button>
-  <div id="save_modal" title="Save Unit Set" class="display_none">
-    <form method="post" action="<%= url_for('save') %>">
-      <%= csrf_field %>
-      <label>Name <input type="text" name="save_parts" class="box_size"></label>
-      <p></p>
-      <button type="submit" name="save" value="submit">Save</button>
-    </form>
-  </div>
-</div>
-
-    </td> <!-- top -->
-    <td> <!-- top -->
-
 <p></p>
 <table border="0" cellpadding="0" cellspacing="0" id="child3">
   <tr>
@@ -296,6 +258,47 @@ disabled
   % $i++;
   % }
 </table> <!-- child3 -->
+% }
+
+  </td> <!-- top -->
+</tr> <!-- top -->
+<tr> <!-- top -->
+  <td> <!-- top -->
+
+<h2>Units [<%= scalar @$parts %>]</h2>
+% if (@$parts) {
+<form method="post" action="<%= url_for('clear') %>" class="center">
+  <%= csrf_field %>
+  <button type="submit" <%= $running ? 'disabled' : '' %>>Flush Cache</button>
+</form>
+
+<div class="center">
+  <button id="loadModalBtn">Load</button>
+  <div id="load_modal" title="Load Unit Set" class="display_none">
+    <form method="post" action="<%= url_for('load') %>">
+      <%= csrf_field %>
+      <select name="load_parts" onchange="this.form.submit()">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>"><%= $n %></option>
+  % }
+      </select>
+    </form>
+  </div>
+  <button id="saveModalBtn">Save</button>
+  <div id="save_modal" title="Save Unit Set" class="display_none">
+    <form method="post" action="<%= url_for('save') %>">
+      <%= csrf_field %>
+      <label>Name <input type="text" name="save_parts" class="box_size"></label>
+      <p></p>
+      <button type="submit" name="save" value="submit">Save</button>
+    </form>
+  </div>
+</div>
+
+    </td> <!-- top -->
+    <td> <!-- top -->
+
 
 % } else {
 
