@@ -93,3 +93,7 @@ input[type="checkbox"] {
 .height100 {
     height: 100%;
 }
+
+#formDiv {
+    width: 100%;
+}

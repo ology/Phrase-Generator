@@ -76,8 +76,12 @@ disabled
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
 % } else {
-<h2>Affix Unit</h2>
+<h2></h2>
+<button id="toggle_btn">Affix Unit</button>
 % }
+
+<div id="formDiv" <%= keys %$edit ? '' : 'class=display_none' %>>
+
 <form method="post" action="<%= url_for('parts') %>" <%= keys %$edit ? 'class=active_border' : '' %>>
   <%= csrf_field %>
   <label>Part name
@@ -182,6 +186,9 @@ disabled
     <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
   % }
   </form>
+
+</div> <!-- formDiv -->
+
   <p></p>
   <div class="bar-panel">
     <div class="bar-1"></div>
@@ -271,7 +278,7 @@ disabled
           <input type="hidden" name="groups" value="<%= join ' ', $p->{groups}->@* %>">
           <input type="hidden" name="pitches" value="<%= $p->{pitches_name} %>">
           <input type="hidden" name="intervals" value="<%= $p->{intervals_name} %>">
-          <button type="submit" name="edit_part" value="<%= $i %>">Edit</button>
+          <button type="submit" name="edit_part" class="edit_part" value="<%= $i %>">Edit</button>
         </form>
         <form method="post" action="<%= url_for('delete') %>">
           <%= csrf_field %>
@@ -394,6 +401,9 @@ $(document).ready(function() {
   });
   $("#saveModalBtn").click(function() {
     $("#save_modal").dialog("open");
+  });
+  $("#toggle_btn").click(function() {
+    $("#formDiv").toggle("blind", {}, 500);
   });
 });
 </script>
