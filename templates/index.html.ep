@@ -25,6 +25,9 @@
 				<main>
 					<h1 class="right_pad">MIDI Phrase Generator</h1>
 
+% if ($running) {
+  <h3>Changes locked while sequencer is running</h3>
+% }
 % if (my $err = flash('error')) {
   <h3 class="red left_pad6"><strong>Error:</strong> <%= $err %></h3>
 % }
@@ -352,9 +355,6 @@ disabled
   <p></p>
   <button type="submit" <%= $running ? 'disabled' : '' %>>Save</button>
 </form>
-% if ($running) {
-  <p><em>Settings locked while sequencer running</em></p>
-% }
 
     </td> <!-- top -->
   </tr> <!-- top -->
