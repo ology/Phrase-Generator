@@ -382,7 +382,7 @@ sub normalize_to_pool ($arr, $pool) {
     if ($arr->@* != $pool->@*) {
         my @w;
         for my $n (0 .. $pool->$#*) {
-            push @w, $arr->[$n] // 0;
+            push @w, $arr->[$n] // 1;
         }
         $arr = \@w;
     }
