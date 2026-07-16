@@ -474,8 +474,7 @@ post '/parts' => sub ($c) {
     $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
 
     if (defined $v->{edit_part}) {
-        my $part = $parts[ $v->{edit_part} ];
-        if ($part) {
+        if (my $part = $parts[ $v->{edit_part} ]) {
             splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
             $part->clear_voice;
             %edit_part = ();
