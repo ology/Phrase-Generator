@@ -15,6 +15,7 @@ use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 use Scalar::Util qw(refaddr);
 use Proc::Find qw(find_proc proc_exists);
+use Crypt::GeneratePassword qw(word);
 
 use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
@@ -440,12 +441,11 @@ post '/settings' => sub ($c) {
 
 post '/parts' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't add while running
-
     my $v = $c->req->params->to_hash;
 
     my %params;
     $params{channel}        = clamp($v->{channel}, 0, 15);
-    $params{name}           = $v->{name} || 'part';
+    $params{name}           = $v->{name} || word(4, 8);
     $params{patch}          = clamp($v->{patch}, 0, 127);
     $params{gate}           = clamp($v->{gate}, 0, 2);
     $params{volume}         = clamp($v->{volume}, 0, 127);
