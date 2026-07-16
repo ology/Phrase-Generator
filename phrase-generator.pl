@@ -475,10 +475,16 @@ post '/parts' => sub ($c) {
 
     if (defined $v->{edit_part}) {
         my $part = $parts[ $v->{edit_part} ];
-        splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
-        $part->clear_voice;
-        %edit_part = ();
-        $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
+        if ($part) {
+            splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
+            $part->clear_voice;
+            %edit_part = ();
+            $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
+        }
+        else {
+            %edit_part = ();
+            $c->flash(error => 'That unit no longer exists — edit cancelled');
+        }
     }
     else {
         push @parts, Music::VoicePhrase->new(%params); #, verbose => 1);
@@ -580,6 +586,7 @@ post '/load' => sub ($c) {
     my $v = $c->req->params->to_hash;
     @parts = ();
     push @parts, Music::VoicePhrase->new($_) for $saved_parts->{ $v->{load_parts} }->@*;
+    %edit_part = ();
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
 } => 'load';
