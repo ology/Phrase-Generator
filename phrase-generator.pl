@@ -605,4 +605,6 @@ post '/mute' => sub ($c) {
 
 # Engage! ###########################################################
 
+app->secrets(['Make it so, Number One.']);
+
 app->start;
