@@ -177,6 +177,10 @@ my %choices = (
         pitches
         intervals
     )],
+    metadata => [qw(
+        pitches_name
+        intervals_name
+    )],
 );
 
 helper ellipsisify => sub ($c, $str, $n=10) {
@@ -441,9 +445,11 @@ post '/settings' => sub ($c) {
 
 post '/parts' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't add while running
+
     my $v = $c->req->params->to_hash;
 
     my %params;
+    my %metadata;
     $params{channel}        = clamp($v->{channel}, 0, 15);
     $params{name}           = $v->{name} || word(4, 8);
     $params{patch}          = clamp($v->{patch}, 0, 127);
@@ -461,11 +467,9 @@ post '/parts' => sub ($c) {
     $params{groups}         = [ split /\s+/,
         ($v->{groups}  || (join ' ', ('1') x $params{pool}->@*)) =~ s/^\s+|\s+$//gr
     ];
-    $params{intervals_name} = $v->{intervals};
-    $params{intervals}      = $choices{intervals}{ $v->{intervals} || '' };
-    $params{pitches_name}   = $v->{pitches};
+    $params{intervals}      = $choices{intervals}{ $v->{intervals_name} || '' };
     $params{pitches}        = [
-        $choices{pitches}{ $v->{pitches} || '1 octave' }->(
+        $choices{pitches}{ $v->{pitches_name} || '1 octave' }->(
             $opt{base}, $params{octave}, $params{scale}
         )
     ];
@@ -473,9 +477,12 @@ post '/parts' => sub ($c) {
     $params{weights} = normalize_to_pool($params{weights}, $params{pool});
     $params{groups}  = normalize_to_pool($params{groups}, $params{pool});
 
+    $metadata{intervals_name} = $v->{intervals_name};
+    $metadata{pitches_name}   = $v->{pitches_name};
+
     if (defined $v->{edit_part}) {
         if (my $part = $parts[ $v->{edit_part} ]) {
-            splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params));
+            splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params, metadata => \%metadata));
             $part->clear_voice;
             %edit_part = ();
             $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
@@ -486,7 +493,7 @@ post '/parts' => sub ($c) {
         }
     }
     else {
-        push @parts, Music::VoicePhrase->new(%params); #, verbose => 1);
+        push @parts, Music::VoicePhrase->new(%params, metadata => \%metadata); #, verbose => 1);
         $c->flash(message => 'Unit ' . scalar(@parts) . ' appended');
     }
 
@@ -516,7 +523,8 @@ post '/stop' => sub ($c) {
 post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
-    $edit_part{$_} = $v->{$_} for ($choices{parameters}->@*, 'edit_part');
+    $edit_part{$_} = $v->{$_} for ($choices{parameters}->@*, $choices{metadata}->@*, 'edit_part');
+    say ddc \%edit_part;
     $c->flash(message => 'Now editing part ' . ($edit_part{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
@@ -570,9 +578,9 @@ post '/cycle' => sub ($c) {
 post '/save' => sub ($c) {
     my $v = $c->req->params->to_hash;
     my @bits;
-    my $params;
     for my $part (@parts) {
-        $params = { map { $_ => $part->$_ } $choices{parameters}->@* };
+        my $params = { map { $_ => $part->$_ } $choices{parameters}->@* };
+        $params->{metadata} = { map { $_ => $part->metadata->{$_} } $choices{metadata}->@* };
         push @bits, $params;
     }
     $saved_parts->{ $v->{save_parts} } = \@bits;

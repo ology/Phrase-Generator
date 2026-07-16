@@ -125,17 +125,17 @@ disabled
   </label>
 
   <label>Pitch range
-    <select name="pitches">
+    <select name="pitches_name">
       % for my $n (sort keys $choices->{pitches}->%*) {
-        <option value="<%= $n %>" <%= $edit->{pitches} && $n eq $edit->{pitches} ? 'selected' : '' %>><%= $n %></option>
+        <option value="<%= $n %>" <%= $edit->{pitches_name} && $n eq $edit->{pitches_name} ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
 
   <label>Allowed intervals
-    <select name="intervals">
+    <select name="intervals_name">
       % for my $n (sort keys $choices->{intervals}->%*) {
-        <option value="<%= $n %>" <%= $edit->{intervals} && $n eq $edit->{intervals} ? 'selected' : '' %>><%= $n %></option>
+        <option value="<%= $n %>" <%= $edit->{intervals_name} && $n eq $edit->{intervals_name} ? 'selected' : '' %>><%= $n %></option>
       % }
     </select>
   </label>
@@ -216,6 +216,7 @@ disabled
     <form method="post" action="<%= url_for('load') %>">
       <%= csrf_field %>
       <select name="load_parts" onchange="this.form.submit()">
+        <option value="">Select...</option>
   % for my $n (sort keys %$saved) {
         <option value="<%= $n %>"><%= $n %></option>
   % }
@@ -276,8 +277,8 @@ disabled
           <input type="hidden" name="pool" value="<%= join ' ', $p->{pool}->@* %>">
           <input type="hidden" name="weights" value="<%= join ' ', $p->{weights}->@* %>">
           <input type="hidden" name="groups" value="<%= join ' ', $p->{groups}->@* %>">
-          <input type="hidden" name="pitches" value="<%= $p->{pitches_name} %>">
-          <input type="hidden" name="intervals" value="<%= $p->{intervals_name} %>">
+          <input type="hidden" name="pitches_name" value="<%= $p->metadata->{pitches_name} %>">
+          <input type="hidden" name="intervals_name" value="<%= $p->metadata->{intervals_name} %>">
           <button type="submit" name="edit_part" class="edit_part" value="<%= $i %>">Edit</button>
         </form>
         <form method="post" action="<%= url_for('delete') %>">
