@@ -348,11 +348,7 @@ sub start_sequencer {
 
     %voice_owner = ();
 
-    for my $part (@parts) {
-        $part->index(0);
-        $part->queue([]);
-        $part->onsets([]);
-    }
+    reset_parts(@parts);
 
     $timer_id = Mojo::IOLoop->recurring($clock_interval => sub {
         $midi_out->clock;
@@ -447,12 +443,10 @@ sub advance_section {
     @parts = $arrangement[$arr_idx]{parts}->@*;
     %voice_owner = ();
     %bag = ();
-    for my $part (@parts) {
-        $part->index(0);
-        $part->queue([]);
-        $part->onsets([]);
-    }
+
+    reset_parts(@parts);
     send_program_changes();
+
     say "Section: $arrangement[$arr_idx]{code} ($arrangement[$arr_idx]{name})" if $opt{verbose};
 }
 
@@ -461,6 +455,14 @@ sub silence_current_notes {
         for my $pitch (keys $voice_owner{$chan}->%*) {
             $midi_out->note_off($chan, $pitch, 0);
         }
+    }
+}
+
+sub reset_parts (@p) {
+    for my $part (@p) {
+        $part->index(0);
+        $part->queue([]);
+        $part->onsets([]);
     }
 }
 
