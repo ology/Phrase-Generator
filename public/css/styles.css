@@ -62,6 +62,9 @@ input[type="checkbox"] {
 .middle_align {
     vertical-align: middle;
 }
+.bottom_align {
+    vertical-align: bottom;
+}
 .left_pad75 {
     padding-left: 0.75em;
 }
@@ -73,6 +76,9 @@ input[type="checkbox"] {
 }
 .top_pad {
     padding-top: 0.3em;
+}
+.top_pad1 {
+    padding-top: 1em;
 }
 .right_pad {
     padding-right: 0.3em;

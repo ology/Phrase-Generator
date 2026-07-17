@@ -39,6 +39,95 @@
   <tr>
     <td>
 
+<h2>Sections</h2>
+
+    </td> <!-- top -->
+    <td>
+
+      <h2></h2>
+      <form method="post" action="<%= url_for('sections') %>">
+
+<table border="0" cellpadding="0" cellspacing="0" id="sections">
+  <tr>
+    <td>
+
+      <label>Section string
+      <select name="sections">
+        % for my $n (sort keys $choices->{sections}->%*) {
+          <option value="<%= $n %>" <%= $sections->{sections} && $n eq $sections->{sections} ? 'selected' : '' %>><%= $n %></option>
+        % }
+      </select>
+      </label>
+
+    </td> <!-- sections -->
+    <td rowspan="2">
+
+      <label>A
+      <select name="section_A">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_A} && $n eq $sections->{section_A} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_A" value="<%= $sections->{bars_A} || 4 %>" placeholder="" size="4" min="1" max="16"></label>
+
+      <br>
+
+      <label>B
+      <select name="section_B">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_B} && $n eq $sections->{section_B} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_B" value="<%= $sections->{bars_B} || 4 %>" placeholder="" size="4" min="1" max="16"></label>
+
+      <br>
+
+      <label>C
+      <select name="section_C">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_C} && $n eq $sections->{section_C} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_C" value="<%= $sections->{bars_C} || 4 %>" placeholder="" size="4" min="1" max="16"></label>
+
+      <br>
+
+      <label>D
+      <select name="section_D">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_D} && $n eq $sections->{section_D} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_D" value="<%= $sections->{bars_D} || 4 %>" placeholder="" size="4" min="1" max="16"></label>
+
+    </td> <!-- sections -->
+  </tr>
+  <tr>
+    <td class="bottom_align">
+      <button type="submit" <%= $running ? '' : 'disabled' %>>Add Section</button>
+    </td> <!-- sections -->
+  </tr>
+</table>
+
+      </form>
+
+    </td> <!-- top -->
+  </tr>
+  <tr>
+    <td>
+
 <h2></h2>
 Status:
 % if ($running) {
