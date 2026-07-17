@@ -437,6 +437,9 @@ sub advance_section {
         stop_sequencer();   # or loop: $arr_idx = 0; $arr_ticks = 0; return;
         return;
     }
+
+    silence_current_notes(); # turn off anything still ringing from the old section
+
     $arr_ticks = 0;
     @parts = $arrangement[$arr_idx]{parts}->@*;
     %voice_owner = ();
@@ -450,6 +453,13 @@ sub advance_section {
     say "Section: $arrangement[$arr_idx]{code} ($arrangement[$arr_idx]{name})" if $opt{verbose};
 }
 
+sub silence_current_notes {
+    for my $chan (keys %voice_owner) {
+        for my $pitch (keys $voice_owner{$chan}->%*) {
+            $midi_out->note_off($chan, $pitch, 0);
+        }
+    }
+}
 
 # Routes ###########################################################
 
