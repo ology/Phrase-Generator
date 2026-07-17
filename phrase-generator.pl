@@ -64,6 +64,10 @@ my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
 my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 my %sections; # TODO
+my @arrangement; # ({ letter => 'A', name => 'myset', parts => [...], bars => 4 }, ...)
+my $arr_idx    = 0;
+my $arr_ticks  = 0; # divisions elapsed in the current arrangement step
+my $ticks_per_bar;
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -332,14 +336,14 @@ sub needs_more ($p, $count) {
 }
 
 sub start_sequencer {
-    return if defined $timer_id; # already running
+return if defined $timer_id;
     die "No parts configured\n" unless @parts;
 
     open_midi();
     send_program_changes();
 
-    $ticks      = 0;
-    $beat_count = 0;
+    $ticks = $beat_count = $arr_ticks = 0;
+    $ticks_per_bar = ($opt{beats_per_bar} // 4) * DIVISIONS;
 
     %voice_owner = ();
 
@@ -352,15 +356,22 @@ sub start_sequencer {
     $timer_id = Mojo::IOLoop->recurring($clock_interval => sub {
         $midi_out->clock;
         $ticks++;
-        if ($ticks % $tick_div == 0) {
-            off($_, $beat_count) for @parts;
-            my $i = 0;
-            for my $part (@parts) {
-                next if exists $muted_parts{ $i++ };
-                populate($part, $beat_count) if needs_more($part, $beat_count);
-                on($part, $beat_count);
-            }
-            $beat_count++;
+        return unless $ticks % $tick_div == 0;
+
+        off($_, $beat_count) for @parts;
+
+        my $i = 0;
+        for my $part (@parts) {
+            next if exists $muted_parts{ $i++ };
+            populate($part, $beat_count) if needs_more($part, $beat_count);
+            on($part, $beat_count);
+        }
+
+        $beat_count++;
+        $arr_ticks++;
+
+        if (@arrangement && $arr_ticks >= $ticks_per_bar * $arrangement[$arr_idx]{bars}) {
+            advance_section();
         }
     });
 }
@@ -407,6 +418,40 @@ sub clamp ($n, $min, $max) {
     return $max if $n > $max;
     return $n;
 }
+
+sub build_arrangement ($sections_href) {
+    my $letters = $choices{sections}{ $sections_href->{section_code} // '' } or return ();
+    my @arr;
+    for my $L ($letters->@*) {
+        my $set_name = $sections_href->{"section_$L"};
+        next unless $set_name && $saved_parts->{$set_name};
+        my $bars = clamp($sections_href->{"bars_$L"} // 4, 1, 16);
+        my @parts_for_step = map { Music::VoicePhrase->new($_->%*) }
+                                 $saved_parts->{$set_name}->@*;
+        push @arr, { letter => $L, name => $set_name, parts => \@parts_for_step, bars => $bars };
+    }
+    return @arr;
+}
+
+sub advance_section {
+    $arr_idx++;
+    if ($arr_idx > $#arrangement) {
+        stop_sequencer();   # or loop: $arr_idx = 0; $arr_ticks = 0; return;
+        return;
+    }
+    $arr_ticks = 0;
+    @parts = $arrangement[$arr_idx]{parts}->@*;
+    %voice_owner = ();
+    %bag = ();
+    for my $part (@parts) {
+        $part->index(0);
+        $part->queue([]);
+        $part->onsets([]);
+    }
+    send_program_changes();
+    say "Section: $arrangement[$arr_idx]{letter} ($arrangement[$arr_idx]{name})" if $opt{verbose};
+}
+
 
 # Routes ###########################################################
 
@@ -626,11 +671,23 @@ post '/mute' => sub ($c) {
 };
 
 post '/load_sections' => sub ($c) {
+    return $c->redirect_to('/') if defined $timer_id; # don't change while running
+
     my $v = $c->req->params->to_hash;
-    @parts = ();
     $sections{$_} = $v->{$_} for keys %$v;
+
+    @arrangement = build_arrangement(\%sections);
+    unless (@arrangement) {
+        $c->flash(error => 'No valid sections configured');
+        return $c->redirect_to('/');
+    }
+
+    $arr_idx = 0;
+    @parts   = $arrangement[0]->{parts}->@*;
+    %edit_part = ();
+
     say ddc \%sections;
-    $c->flash(message => 'Section loaded: ' . $v->{'section_code'});
+    $c->flash(message => 'Section loaded: ' . $sections{section_code});
     $c->redirect_to('/');
 };
 
