@@ -35,14 +35,51 @@
   <h3 class="green left_pad6"><%= $msg %></h3>
 % }
 
-<table border="0" cellpadding="0" cellspacing="0" id="top">
+<table border="1" cellpadding="0" cellspacing="0" id="top">
   <tr>
-    <td>
+    <td class="middle_align">
 
-<h2>Sections</h2>
+<p>
+Status:
+% if ($running) {
+<span class="red"><strong>RUNNING</strong></span>
+% } else {
+stopped
+% }
+</p>
+<h2></h2>
+% if ($opt->{port} =~ /fluidsynth/) {
+Fluidsynth:
+  % if ($fluid) {
+<span class="green">enabled</span>
+  % } else {
+disabled
+  % }
+% }
+<p></p>
+% if ($opt->{port} =~ /fluid/) {
+<form method="post" action="<%= url_for('cycle') %>" class="block">
+  <%= csrf_field %>
+  <button type="submit">Fluid</button>
+</form>
+% }
+<div class="form-container">
+  <form method="post" action="<%= url_for('start') %>" class="block">
+    <%= csrf_field %>
+    <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
+  </form>
+  <form method="post" action="<%= url_for('stop') %>" class="block">
+    <%= csrf_field %>
+    <button type="submit" <%= $running ? '' : 'disabled' %>>⏹</button>
+  </form>
+</div>
 
     </td> <!-- top -->
-    <td>
+    <td rowspan="2"> <!-- top -->
+
+<h2></h2>
+<button id="toggle_section" class="purple">Load Section</button>
+<div id="sectionDiv" <%= keys %$sections ? '' : 'class=display_none' %>>
 
       <h2></h2>
       <form method="post" action="<%= url_for('load_sections') %>">
@@ -119,47 +156,7 @@
 
       </form>
 
-    </td> <!-- top -->
-  </tr>
-  <tr>
-    <td>
-
-<h2></h2>
-Status:
-% if ($running) {
-<span class="red"><strong>RUNNING</strong></span>
-% } else {
-stopped
-% }
-<p></p>
-% if ($opt->{port} =~ /fluidsynth/) {
-Fluidsynth:
-  % if ($fluid) {
-<span class="green">enabled</span>
-  % } else {
-disabled
-  % }
-% }
-<p></p>
-% if ($opt->{port} =~ /fluid/) {
-<form method="post" action="<%= url_for('cycle') %>" class="block">
-  <%= csrf_field %>
-  <button type="submit">Fluid</button>
-</form>
-% }
-<div class="form-container">
-  <form method="post" action="<%= url_for('start') %>" class="block">
-    <%= csrf_field %>
-    <button type="submit" <%= $running ? 'disabled' : '' %>>▶</button>
-  </form>
-  <form method="post" action="<%= url_for('stop') %>" class="block">
-    <%= csrf_field %>
-    <button type="submit" <%= $running ? '' : 'disabled' %>>⏹</button>
-  </form>
-</div>
-
-    </td> <!-- top -->
-    <td rowspan="2"> <!-- top -->
+</div> <!-- sectionDiv -->
 
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
@@ -490,6 +487,9 @@ $(document).ready(function() {
   });
   $("#toggle_form").click(function() {
     $("#formDiv").toggle("blind", {}, 500);
+  });
+  $("#toggle_section").click(function() {
+    $("#sectionDiv").toggle("blind", {}, 500);
   });
 });
 </script>
