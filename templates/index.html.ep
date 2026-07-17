@@ -480,8 +480,5 @@ $(document).ready(function() {
   $("#toggle_form").click(function() {
     $("#formDiv").toggle("blind", {}, 500);
   });
-  $("#toggle_section").click(function() {
-    $("#sectionDiv").toggle("blind", {}, 500);
-  });
 });
 </script>
