@@ -15,7 +15,6 @@ use IPC::Open2 qw(open2);
 use Storable qw(retrieve store);
 use Scalar::Util qw(refaddr);
 use Proc::Find qw(find_proc proc_exists);
-use Crypt::GeneratePassword qw(word);
 
 use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
@@ -192,10 +191,6 @@ my %choices = (
 
 helper ellipsisify => sub ($c, $str, $n=10) {
     return length($str) > $n + 3 ? substr($str, 0, $n) . '...' : $str;
-};
-
-helper word => sub ($c, $min=4, $max=8) {
-    return word($min, $max);
 };
 
 # Rt-MIDI ###########################################################
