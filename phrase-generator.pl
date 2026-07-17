@@ -65,6 +65,7 @@ my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 my %sections; # TODO
 my @arrangement; # ({ code => 'A', name => 'myset', parts => [...], bars => 4 }, ...)
+my $arrangement_finished = 0;
 my $arr_idx    = 0;
 my $arr_ticks  = 0; # divisions elapsed in the current arrangement step
 my $ticks_per_bar;
@@ -335,8 +336,14 @@ sub needs_more ($p, $count) {
 }
 
 sub start_sequencer {
-return if defined $timer_id;
+    return if defined $timer_id;
     die "No parts configured\n" unless @parts;
+
+    $arrangement_finished = 0;
+    if (@arrangement && $arr_idx > $#arrangement) {
+        $arr_idx = 0;
+        @parts   = $arrangement[0]{parts}->@*;
+    }
 
     open_midi();
     send_program_changes();
@@ -434,6 +441,7 @@ sub build_arrangement ($sections_href) {
 sub advance_section {
     $arr_idx++;
     if ($arr_idx > $#arrangement) {
+        $arrangement_finished = 1;
         stop_sequencer();   # or loop: $arr_idx = 0; $arr_ticks = 0; return;
         return;
     }
@@ -578,6 +586,7 @@ post '/start' => sub ($c) {
 
 post '/stop' => sub ($c) {
     stop_sequencer();
+    $arrangement_finished = 0;
     $c->redirect_to('/');
 } => 'stop';
 
@@ -585,13 +594,13 @@ post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
     $edit_part{$_} = $v->{$_} for $choices{parameters}->@*, $choices{metadata}->@*, 'edit_part';
-    say ddc \%edit_part;
     $c->flash(message => 'Now editing part ' . ($edit_part{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
 
 get '/cancel' => sub ($c) {
     %edit_part = ();
+    %sections = ();
     $c->redirect_to('/');
 } => 'cancel';
 
