@@ -45,14 +45,14 @@
     <td>
 
       <h2></h2>
-      <form method="post" action="<%= url_for('sections') %>">
+      <form method="post" action="<%= url_for('load_sections') %>">
 
 <table border="0" cellpadding="0" cellspacing="0" id="sections">
   <tr>
     <td>
 
-      <label>Section string
-      <select name="sections">
+      <label>Section code
+      <select name="section_code">
         % for my $n (sort keys $choices->{sections}->%*) {
           <option value="<%= $n %>" <%= $sections->{sections} && $n eq $sections->{sections} ? 'selected' : '' %>><%= $n %></option>
         % }
@@ -116,7 +116,7 @@
   </tr>
   <tr>
     <td class="bottom_align">
-      <button type="submit" <%= $running ? '' : 'disabled' %>>Add Section</button>
+      <button type="submit" name="load_sections" <%= $running ? 'disabled' : '' %>>Load Section</button>
     </td> <!-- sections -->
   </tr>
 </table>

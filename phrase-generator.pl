@@ -63,7 +63,7 @@ my ($fluid_out, $fluid_in); # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
 my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
-my %sections; # keys choices -> sections
+my %sections; # TODO
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -72,7 +72,6 @@ my %choices = (
     sections    => {
         'A'    => [qw(A)],
         'AB'   => [qw(A B)],
-        'ABA'  => [qw(A B A)],
         'ABC'  => [qw(A B C)],
         'ABCD' => [qw(A B C D)],
     },
@@ -601,7 +600,7 @@ post '/save' => sub ($c) {
 post '/load' => sub ($c) {
     my $v = $c->req->params->to_hash;
     @parts = ();
-    push @parts, Music::VoicePhrase->new($_) for $saved_parts->{ $v->{load_parts} }->@*;
+    push @parts, Music::VoicePhrase->new(%$_) for $saved_parts->{ $v->{load_parts} }->@*;
     %edit_part = ();
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
@@ -624,16 +623,16 @@ post '/mute' => sub ($c) {
     }
     $c->flash(message => $msg);
     $c->redirect_to('/');
-} => 'mute';
+};
 
-post '/sections' => sub ($c) {
-    return $c->redirect_to('/') if defined $timer_id; # don't change while running
+post '/load_sections' => sub ($c) {
     my $v = $c->req->params->to_hash;
-    $sections{$_} = $v->{$_} for keys $choices{sections}->%*;
+    @parts = ();
+    $sections{$_} = $v->{$_} for keys %$v;
     say ddc \%sections;
-    $c->flash(message => 'Now editing section ' . ($sections{edit_section} + 1));
+    $c->flash(message => 'Section loaded: ' . $v->{'section_code'});
     $c->redirect_to('/');
-} => 'sections';
+};
 
 # Engage! ###########################################################
 
