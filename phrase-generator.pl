@@ -193,6 +193,10 @@ helper ellipsisify => sub ($c, $str, $n=10) {
     return length($str) > $n + 3 ? substr($str, 0, $n) . '...' : $str;
 };
 
+helper word => sub ($c, $min=4, $max=8) {
+    return word($min, $max);
+};
+
 # Rt-MIDI ###########################################################
 
 sub recompute_timing {
@@ -498,7 +502,7 @@ post '/parts' => sub ($c) {
     my %params;
     my %metadata;
     $params{channel}        = clamp($v->{channel}, 0, 15);
-    $params{name}           = $v->{name} || word(4, 8);
+    $params{name}           = $v->{name} || 'Part';
     $params{patch}          = clamp($v->{patch}, 0, 127);
     $params{gate}           = clamp($v->{gate}, 0, 2);
     $params{volume}         = clamp($v->{volume}, 0, 127);

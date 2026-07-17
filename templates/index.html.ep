@@ -170,7 +170,7 @@ disabled
 <form method="post" action="<%= url_for('parts') %>" <%= keys %$edit ? 'class=active_border' : '' %>>
   <%= csrf_field %>
   <label>Part name
-    <input type="text" name="name" value="<%= $edit->{name} %>" placeholder="" size="15"></label>
+    <input type="text" name="name" value="<%= $edit->{name} || word() %>" placeholder="" size="15"></label>
 
   <label>Channel
     <select name="channel">
