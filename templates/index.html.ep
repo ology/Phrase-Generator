@@ -52,11 +52,7 @@
     <td>
 
       <label>Section code
-      <select name="section_code">
-        % for my $n (sort keys $choices->{sections}->%*) {
-          <option value="<%= $n %>" <%= $sections->{sections} && $n eq $sections->{sections} ? 'selected' : '' %>><%= $n %></option>
-        % }
-      </select>
+        <input type="text" name="section_code" value="<%= $sections->{section_code} || '' %>" placeholder="eg. ABACAB">
       </label>
 
     </td> <!-- sections -->

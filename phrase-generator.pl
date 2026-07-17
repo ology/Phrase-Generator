@@ -64,7 +64,7 @@ my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
 my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
 my %sections; # TODO
-my @arrangement; # ({ letter => 'A', name => 'myset', parts => [...], bars => 4 }, ...)
+my @arrangement; # ({ code => 'A', name => 'myset', parts => [...], bars => 4 }, ...)
 my $arr_idx    = 0;
 my $arr_ticks  = 0; # divisions elapsed in the current arrangement step
 my $ticks_per_bar;
@@ -73,12 +73,7 @@ my %choices = (
     patch       => midi_dump('patch2number'),
     number      => midi_dump('number2patch'),
     scale_names => scale_names(),
-    sections    => {
-        'A'    => [qw(A)],
-        'AB'   => [qw(A B)],
-        'ABC'  => [qw(A B C)],
-        'ABCD' => [qw(A B C D)],
-    },
+    sections    => {},
     pool        => {
         'wn'            => [qw(wn)],
         'hn'            => [qw(hn)],
@@ -420,15 +415,14 @@ sub clamp ($n, $min, $max) {
 }
 
 sub build_arrangement ($sections_href) {
-    my $letters = $choices{sections}{ $sections_href->{section_code} // '' } or return ();
+    my $code = $sections_href->{section_code} or return ();
     my @arr;
-    for my $L ($letters->@*) {
-        my $set_name = $sections_href->{"section_$L"};
+    for my $c (split //, $code) {
+        my $set_name = $sections_href->{"section_$c"};
         next unless $set_name && $saved_parts->{$set_name};
-        my $bars = clamp($sections_href->{"bars_$L"} // 4, 1, 16);
-        my @parts_for_step = map { Music::VoicePhrase->new($_->%*) }
-                                 $saved_parts->{$set_name}->@*;
-        push @arr, { letter => $L, name => $set_name, parts => \@parts_for_step, bars => $bars };
+        my $bars = clamp($sections_href->{"bars_$c"} // 4, 1, 16);
+        my @parts_for_step = map { Music::VoicePhrase->new(%$_) } $saved_parts->{$set_name}->@*;
+        push @arr, { code => $c, name => $set_name, parts => \@parts_for_step, bars => $bars };
     }
     return @arr;
 }
@@ -449,7 +443,7 @@ sub advance_section {
         $part->onsets([]);
     }
     send_program_changes();
-    say "Section: $arrangement[$arr_idx]{letter} ($arrangement[$arr_idx]{name})" if $opt{verbose};
+    say "Section: $arrangement[$arr_idx]{code} ($arrangement[$arr_idx]{name})" if $opt{verbose};
 }
 
 
@@ -686,7 +680,6 @@ post '/load_sections' => sub ($c) {
     @parts   = $arrangement[0]->{parts}->@*;
     %edit_part = ();
 
-    say ddc \%sections;
     $c->flash(message => 'Section loaded: ' . $sections{section_code});
     $c->redirect_to('/');
 };
