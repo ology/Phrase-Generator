@@ -150,6 +150,7 @@ disabled
   <tr>
     <td class="bottom_align">
       <button type="submit" name="load_sections" <%= $running ? 'disabled' : '' %>>Load Section</button>
+      <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
     </td> <!-- sections -->
   </tr>
 </table>
@@ -269,6 +270,7 @@ disabled
     <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
   % } else {
     <button type="submit" <%= $running ? 'disabled' : '' %>>Affix</button>
+    <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
   % }
   </form>
 
