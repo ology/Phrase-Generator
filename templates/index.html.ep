@@ -328,7 +328,7 @@ disabled
           <%= csrf_field %>
           <button type="submit" name="delete_part" value="<%= $i %>" onclick="if(!confirm('Delete part <%= $i + 1 %>?')) return false;">Delete</button>
         </form>
-        <form action="/mute" method="post">
+        <form action="/mute" method="post" style="border: none;">
           <%= csrf_field %>
           <input type="hidden" name="mute_part_<%= $i %>" value="0">
           <label class="white top_pad"><input type="checkbox" name="mute_part_<%= $i %>" value="1" <%= exists $muted->{$i} ? 'checked' : '' %> onchange="this.form.submit()"> Mute</label>
