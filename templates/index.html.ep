@@ -77,10 +77,6 @@ disabled
     </td> <!-- top -->
     <td rowspan="2"> <!-- top -->
 
-<h2></h2>
-<button id="toggle_section" class="purple">Open Sections</button>
-<div id="sectionDiv" <%= keys %$sections ? '' : 'class=display_none' %>>
-
       <h2></h2>
       <form method="post" action="<%= url_for('load_sections') %>">
 
@@ -156,8 +152,6 @@ disabled
 </table>
 
       </form>
-
-</div> <!-- sectionDiv -->
 
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
