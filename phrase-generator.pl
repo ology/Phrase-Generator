@@ -575,6 +575,15 @@ post '/clear' => sub ($c) {
     $c->redirect_to('/');
 } => 'clear';
 
+post '/clear_sections' => sub ($c) {
+    return $c->redirect_to('/') if defined $timer_id;
+    @parts = ();
+    %edit_part = ();
+    %muted_parts = ();
+    %bag  = ();
+    $c->redirect_to('/');
+} => 'clear';
+
 post '/start' => sub ($c) {
     eval { start_sequencer() };
     $c->flash(error => $@) if $@;
