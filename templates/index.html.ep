@@ -78,7 +78,7 @@ disabled
     <td rowspan="2"> <!-- top -->
 
 <h2></h2>
-<button id="toggle_section" class="purple">Load Section</button>
+<button id="toggle_section" class="purple">Open Sections</button>
 <div id="sectionDiv" <%= keys %$sections ? '' : 'class=display_none' %>>
 
       <h2></h2>
