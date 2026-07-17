@@ -145,8 +145,7 @@ disabled
   </tr>
   <tr>
     <td class="bottom_align">
-      <button type="submit" name="load_sections" <%= $running ? 'disabled' : '' %>>Load Section</button>
-      <a href="<%= url_for('cancel') %>" class="white decoration_none">Cancel</a>
+      <button type="submit" name="load_sections" <%= $running ? 'disabled' : '' %>>Use Section</button>
     </td> <!-- sections -->
   </tr>
 </table>
