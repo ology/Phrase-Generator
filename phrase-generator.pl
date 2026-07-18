@@ -630,6 +630,7 @@ post '/delete' => sub ($c) {
     splice(@parts, $v->{delete_part}, 1);
     %edit_part = ();
     %muted_parts = ();
+    clear_arrangement();
     $c->flash(message => 'Deleted part ' . ($v->{delete_part} + 1));
     $c->redirect_to('/');
 } => 'delete';
