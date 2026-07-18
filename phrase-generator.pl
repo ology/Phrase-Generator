@@ -53,6 +53,7 @@ my $tick_div = CLOCKS_PER_BEAT / DIVISIONS; # clocks per 16th-note
 
 recompute_timing();
 
+# filthy globals
 my $ticks      = 0;  # clock ticks
 my $beat_count = 0;  # how many beats?
 my @parts;           # Music::VoicePhrase objects
