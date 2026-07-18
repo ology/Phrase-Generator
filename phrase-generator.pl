@@ -468,6 +468,13 @@ sub reset_parts (@p) {
     }
 }
 
+sub clear_arrangement {
+    @arrangement           = ();
+    $arr_idx                = 0;
+    $arr_ticks              = 0;
+    $arrangement_finished   = 0;
+}
+
 # Routes ###########################################################
 
 get '/' => sub ($c) {
@@ -553,6 +560,7 @@ post '/parts' => sub ($c) {
             splice(@parts, $v->{edit_part}, 1, Music::VoicePhrase->new(%params, metadata => \%metadata));
             $part->clear_voice;
             %edit_part = ();
+            clear_arrangement();
             $c->flash(message => 'Unit ' . ($v->{edit_part} + 1) . ' updated');
         }
         else {
@@ -562,6 +570,7 @@ post '/parts' => sub ($c) {
     }
     else {
         push @parts, Music::VoicePhrase->new(%params, metadata => \%metadata); #, verbose => 1);
+        clear_arrangement();
         $c->flash(message => 'Unit ' . scalar(@parts) . ' appended');
     }
 
@@ -574,6 +583,7 @@ post '/clear' => sub ($c) {
     %edit_part = ();
     %muted_parts = ();
     %bag  = ();
+    clear_arrangement();
     $c->redirect_to('/');
 } => 'clear';
 
@@ -672,6 +682,7 @@ post '/load' => sub ($c) {
     @parts = ();
     push @parts, Music::VoicePhrase->new(%$_) for $saved_parts->{ $v->{load_parts} }->@*;
     %edit_part = ();
+    clear_arrangement();
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
 } => 'load';
