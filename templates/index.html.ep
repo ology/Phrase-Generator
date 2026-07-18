@@ -102,6 +102,17 @@ disabled
       <label>Bars
         <input type="number" name="bars_A" value="<%= $sections->{bars_A} || 4 %>" size="4" min="1" max="16"></label>
 
+      <label>E
+      <select name="section_E">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_E} && $n eq $sections->{section_E} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_E" value="<%= $sections->{bars_E} || 4 %>" size="4" min="1" max="16"></label>
+
       <br>
 
       <label>B
@@ -114,6 +125,17 @@ disabled
       </label>
       <label>Bars
         <input type="number" name="bars_B" value="<%= $sections->{bars_B} || 4 %>" size="4" min="1" max="16"></label>
+
+      <label>F
+      <select name="section_F">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_F} && $n eq $sections->{section_F} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_F" value="<%= $sections->{bars_F} || 4 %>" size="4" min="1" max="16"></label>
 
       <br>
 
@@ -128,6 +150,17 @@ disabled
       <label>Bars
         <input type="number" name="bars_C" value="<%= $sections->{bars_C} || 4 %>" size="4" min="1" max="16"></label>
 
+      <label>G
+      <select name="section_G">
+        <option value="">Select...</option>
+  % for my $n (sort keys %$saved) {
+        <option value="<%= $n %>" <%= defined $sections->{section_G} && $n eq $sections->{section_G} ? 'selected' : '' %>><%= $n %></option>
+  % }
+      </select>
+      </label>
+      <label>Bars
+        <input type="number" name="bars_G" value="<%= $sections->{bars_G} || 4 %>" size="4" min="1" max="16"></label>
+
       <br>
 
       <label>D
@@ -141,18 +174,16 @@ disabled
       <label>Bars
         <input type="number" name="bars_D" value="<%= $sections->{bars_D} || 4 %>" size="4" min="1" max="16"></label>
 
-      <br>
-
-      <label>E
-      <select name="section_E">
+      <label>H
+      <select name="section_H">
         <option value="">Select...</option>
   % for my $n (sort keys %$saved) {
-        <option value="<%= $n %>" <%= defined $sections->{section_E} && $n eq $sections->{section_E} ? 'selected' : '' %>><%= $n %></option>
+        <option value="<%= $n %>" <%= defined $sections->{section_H} && $n eq $sections->{section_H} ? 'selected' : '' %>><%= $n %></option>
   % }
       </select>
       </label>
       <label>Bars
-        <input type="number" name="bars_E" value="<%= $sections->{bars_E} || 4 %>" size="4" min="1" max="16"></label>
+        <input type="number" name="bars_H" value="<%= $sections->{bars_H} || 4 %>" size="4" min="1" max="16"></label>
 
     </td> <!-- sections -->
   </tr>
