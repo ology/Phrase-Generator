@@ -728,7 +728,7 @@ post '/load_sections' => sub ($c) {
     @parts   = $arrangement[0]->{parts}->@*;
     %edit_part = ();
 
-    $c->flash(message => 'Section loaded: ' . $sections{section_code});
+    $c->flash(message => 'Section loaded: ' . $c->ellipsisify($sections{section_code}, 16));
     $c->redirect_to('/');
 };
 

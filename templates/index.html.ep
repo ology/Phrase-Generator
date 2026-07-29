@@ -85,11 +85,13 @@ disabled
     <td>
 
       <label>Section code
-        <input type="text" name="section_code" value="<%= $sections->{section_code} || '' %>" placeholder="eg. ABACAD">
+        <input type="text" name="section_code" value="<%= $sections->{section_code} || '' %>" placeholder="eg. ABACAD" size="51">
       </label>
 
     </td> <!-- sections -->
-    <td rowspan="2">
+  </tr>
+  <tr>
+    <td>
 
       <label>A
       <select name="section_A">
@@ -187,12 +189,10 @@ disabled
 
     </td> <!-- sections -->
   </tr>
-      </td>
-  </tr>
   <tr>
     <td>
       <label>Repeats
-        <input type="number" name="repeats" value="<%= $repeats || '1' %>" placeholder="">
+        <input type="number" name="repeats" value="<%= $repeats || '1' %>" placeholder="" size="4">
       </label>
   </tr>
   <tr>
