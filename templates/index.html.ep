@@ -187,6 +187,14 @@ disabled
 
     </td> <!-- sections -->
   </tr>
+      </td>
+  </tr>
+  <tr>
+    <td>
+      <label>Repeats
+        <input type="number" name="repeats" value="<%= $repeats || '1' %>" placeholder="">
+      </label>
+  </tr>
   <tr>
     <td class="bottom_align">
       <button type="submit" name="load_sections" <%= $running ? 'disabled' : '' %>>Deploy</button>

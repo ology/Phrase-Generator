@@ -70,6 +70,7 @@ my $arrangement_finished = 0;
 my $arr_idx    = 0;
 my $arr_ticks  = 0; # divisions elapsed in the current arrangement step
 my $ticks_per_bar;
+my $repeats = 1;
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -498,6 +499,7 @@ get '/' => sub ($c) {
         muted    => \%muted_parts,
         fluid    => $fluid,
         sections => \%sections,
+        repeats  => $repeats,
     );
     $c->render('index');
 } => 'index';
@@ -712,6 +714,9 @@ post '/load_sections' => sub ($c) {
 
     my $v = $c->req->params->to_hash;
     $sections{$_} = $v->{$_} for keys %$v;
+    $repeats = delete $sections{repeats} // 1;
+
+    $sections{section_code} = $sections{section_code} x $repeats;
 
     @arrangement = build_arrangement(\%sections);
     unless (@arrangement) {
