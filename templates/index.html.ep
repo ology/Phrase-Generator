@@ -85,7 +85,7 @@ disabled
     <td>
 
       <label>Section code
-        <input type="text" name="section_code" value="<%= $sections->{section_code} || '' %>" placeholder="eg. ABACAD" size="51">
+        <input type="text" name="section_code" value="<%= $sections->{section_code} || '' %>" placeholder="eg. ABACAD" size="50%">
       </label>
 
     </td> <!-- sections -->
