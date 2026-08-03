@@ -8,4 +8,3 @@ requires 'Proc::Find';
 requires 'IPC::Open2';
 requires 'Scalar::Util';
 requires 'Proc::Find';
-requires 'Crypt::GeneratePassword';
