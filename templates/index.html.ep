@@ -465,7 +465,7 @@ disabled
       % }
     </select>
   </label>
-  <label>BPM <input type="number" name="bpm" value="<%= $opt->{bpm} %>" size="4"></label>
+  <label>BPM <input type="number" name="bpm" value="<%= $opt->{bpm} %>" size="4" min="1" max="300"></label>
   <label>Key
     <select name="base">
       % for my $n ($choices->{keys_order}->@*) {
