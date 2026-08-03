@@ -597,7 +597,7 @@ post '/clear_sections' => sub ($c) {
     %muted_parts = ();
     %bag  = ();
     $c->redirect_to('/');
-} => 'clear';
+} => 'clear_sections';
 
 post '/start' => sub ($c) {
     eval { start_sequencer() };
@@ -628,6 +628,8 @@ get '/cancel' => sub ($c) {
 post '/delete' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
+    my $idx = $v->{delete_part};
+    return $c->redirect_to('/') unless defined $idx && $idx =~ /^\d+$/ && $parts[$idx];
     my $part = $parts[ $v->{delete_part} ];
     delete $bag{ refaddr($part) }; # remove the played part from our bag
     splice(@parts, $v->{delete_part}, 1);
