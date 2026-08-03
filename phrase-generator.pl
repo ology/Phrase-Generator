@@ -2,8 +2,9 @@
 
 use Mojolicious::Lite -signatures;
 
-use feature qw(say try);
-no warnings qw(experimental::try experimental::signatures);
+use v5.36;
+use feature qw(try);
+no warnings qw(experimental::try);
 
 use Data::Dumper::Compact qw(ddc);
 use Getopt::Long qw(GetOptionsFromArray);
