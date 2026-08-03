@@ -492,7 +492,9 @@ disabled
             <div class="bar-5"></div>
           </div>
           <p></p>
-          Phrase Generator created by <a href="https://www.ology.net/">Gene</a><br>
+          Phrase Generator created by <a href="https://www.ology.net/">Gene</a>
+          with <a href="https://www.perl.org/">Perl</a> & <a href="https://www.mojolicious.org/">Mojolicious</a>
+          <br>
 					LCARS Template by <a href="https://www.thelcars.com">www.TheLCARS.com</a>
 				</footer>
 			</div>
