@@ -3,8 +3,8 @@ body {
     margin: 2em auto;
 }
 a {
-    text-decoration: none; /* Removes the underline */
-    color: inherit; /* Uses the color of the parent text element */
+    text-decoration: none !important; /* Removes the underline */
+    color: inherit !important; /* Uses the color of the parent text element */
 }
 form {
     margin: 0.75em 0;
