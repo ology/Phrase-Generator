@@ -512,7 +512,7 @@ post '/settings' => sub ($c) {
     $opt{port} = $v->{port} if defined $v->{port};
     $opt{base} = $v->{base} if defined $v->{base};
     if ($v->{bpm}) {
-        $opt{bpm} = clamp($v->{bpm}, 20, 300);
+        $opt{bpm} = clamp($v->{bpm}, 1, 300);
         recompute_timing();
     }
     $opt{verbose} = $v->{verbose} ? 1 : 0;
