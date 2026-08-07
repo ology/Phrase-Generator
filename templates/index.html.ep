@@ -78,6 +78,10 @@ disabled
     <td rowspan="2"> <!-- top -->
 
       <h2></h2>
+      <button id="toggle_sections" class="purple">Section</button>
+
+<div id="sectionsDiv" <%= keys %$sections ? '' : 'class=display_none' %>>
+
       <form method="post" action="<%= url_for('load_sections') %>">
 
 <table border="0" cellpadding="0" cellspacing="0" id="sections">
@@ -204,6 +208,8 @@ disabled
 </table>
 
       </form>
+
+</div> <!-- sectionsDiv -->
 
 % if (defined $edit->{edit_part}) {
 <h2>Modify Unit <%= $edit->{edit_part} + 1 %></h2>
@@ -534,6 +540,9 @@ $(document).ready(function() {
   });
   $("#toggle_form").click(function() {
     $("#formDiv").toggle("blind", {}, 500);
+  });
+  $("#toggle_sections").click(function() {
+    $("#sectionsDiv").toggle("blind", {}, 500);
   });
 });
 </script>
