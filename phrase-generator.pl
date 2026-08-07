@@ -719,9 +719,18 @@ post '/load_sections' => sub ($c) {
     $sections{$_} = $v->{$_} for keys %$v;
     $repeats = delete $sections{repeats} // 1;
 
-    $sections{section_code} = $sections{section_code} x $repeats;
+    # Build the expanded code used for the actual arrangement WITHOUT
+    # overwriting $sections{section_code} itself. That field's value is
+    # echoed straight back into the section_code input's `value`
+    # attribute on every page render - if it got overwritten with the
+    # repeated string here, the next submit (even just to tweak an
+    # unrelated field like bars_A) would take the already-repeated code
+    # and repeat it again, compounding on every resubmission. Keeping
+    # $sections{section_code} as exactly what the user typed means
+    # "repeats" always multiplies the same raw code, every time.
+    my $expanded_code = ($sections{section_code} // '') x $repeats;
 
-    @arrangement = build_arrangement(\%sections);
+    @arrangement = build_arrangement({ %sections, section_code => $expanded_code });
     unless (@arrangement) {
         $c->flash(error => 'No valid sections configured');
         return $c->redirect_to('/');
@@ -731,7 +740,7 @@ post '/load_sections' => sub ($c) {
     @parts   = $arrangement[0]->{parts}->@*;
     %edit_part = ();
 
-    $c->flash(message => 'Section loaded: ' . $c->ellipsisify($sections{section_code}, 16));
+    $c->flash(message => 'Section loaded: ' . $c->ellipsisify($expanded_code, 16));
     $c->redirect_to('/');
 };
 
