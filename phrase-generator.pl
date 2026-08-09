@@ -559,7 +559,7 @@ post '/parts' => sub ($c) {
     $metadata{pitches_name}   = $v->{pitches_name};
 
     if (defined $v->{edit_part}) {
-        if (my $part = $parts[ $v->{edit_part} ]) {
+        if ($v->{edit_part} =~ /^\d+$/ && (my $part = $parts[ $v->{edit_part} ])) {
             delete $bag{ refaddr($part) }; # remove the replaced part from our bag, same as /delete does
             my $new_part = Music::VoicePhrase->new(%params, metadata => \%metadata);
             splice(@parts, $v->{edit_part}, 1, $new_part);
