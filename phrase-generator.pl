@@ -718,7 +718,9 @@ post '/load_sections' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
 
     my $v = $c->req->params->to_hash;
-    $sections{$_} = $v->{$_} for keys %$v;
+    for my $key (qw(section_code repeats), map { ("section_$_", "bars_$_") } 'A'..'H') {
+        $sections{$key} = $v->{$key} if defined $v->{$key};
+    }
     $repeats = delete $sections{repeats} // 1;
 
     $sections{section_code} = $sections{section_code} x $repeats;
