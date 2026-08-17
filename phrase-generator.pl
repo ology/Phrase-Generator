@@ -21,6 +21,7 @@ use constant {
     DIVISIONS       => 12, # divisions of a quarter-note
     CLOCKS_PER_BEAT => 24, # PPQN
     SAVED           => 'saved-units.dat',
+    STATE           => 'app-state.dat', # live @parts/%opt/etc, survives restarts
     FLUID           => 'fluidsynth',
 };
 
@@ -30,17 +31,38 @@ my %opt = (
     base    => 'C',
     verbose => 1,
 );
+
+store {}, SAVED unless -e SAVED;
+my $saved_parts = retrieve(SAVED);
+
+# --- persisted app state (survives worker restarts & hypnotoad hot deploys) ---
+# These used to be plain in-memory globals, which meant every redeploy (or
+# any second hypnotoad worker) silently reset them. They're now loaded from
+# STATE at startup and written back out by save_state() after every request
+# that changes them. See save_state() below for what's included and why.
+my %edit_part;    # edit a part
+my %muted_parts;  # don't play these parts
+my %sections;     # TODO
+my $repeats = 1;
+my @parts;        # Music::VoicePhrase objects
+
+{
+    my $state = -e STATE ? retrieve(STATE) : {};
+    %opt         = (%opt, %{ $state->{opt} // {} });
+    %edit_part   = %{ $state->{edit_part}   // {} };
+    %muted_parts = %{ $state->{muted_parts} // {} };
+    %sections    = %{ $state->{sections}    // {} };
+    $repeats     = $state->{repeats} // 1;
+    @parts       = map { Music::VoicePhrase->new(%$_) } @{ $state->{parts} // [] };
+}
+
+# CLI flags always win over whatever was persisted
 GetOptionsFromArray(\@ARGV, \%opt,
     'port=s',
     'bpm=i',
     'base=s',
     'verbose=s',
 );
-
-store {}, SAVED unless -e SAVED;
-my $saved_parts = retrieve(SAVED);
-
-my %edit_part; # edit a part
 
 # redefine what happens on ^C, same as the original script
 $SIG{INT} = sub {
@@ -55,23 +77,21 @@ my $tick_div = CLOCKS_PER_BEAT / DIVISIONS; # clocks per 16th-note
 
 recompute_timing();
 
-# even filthy globals
+# even filthier globals — per-process resources (hardware MIDI port, the
+# running timer, the shuffle bag). These are NOT persisted: they're only
+# ever meaningful to the one process that currently owns the MIDI device.
 my $ticks      = 0;  # clock ticks
 my $beat_count = 0;  # how many beats?
-my @parts;           # Music::VoicePhrase objects
 my $midi_out;        # RtMidiOut instance
 my $timer_id;        # Mojo::IOLoop->recurring id while running
 my ($fluid_out, $fluid_in); # for open2()
 my %voice_owner; # $voice_owner{$channel}{$pitch} = refaddr of note
-my %muted_parts; # don't play these parts
 my %bag; # $bag{ refaddr($p) } = [ shuffled remaining indices ]
-my %sections; # TODO
 my @arrangement; # ({ code => 'A', name => 'myset', parts => [...], bars => 4 }, ...)
 my $arrangement_finished = 0;
 my $arr_idx    = 0;
 my $arr_ticks  = 0; # divisions elapsed in the current arrangement step
 my $ticks_per_bar;
-my $repeats = 1;
 
 my %choices = (
     patch       => midi_dump('patch2number'),
@@ -217,10 +237,10 @@ sub open_midi {
 
 sub send_program_changes {
     for my $part (@parts) {
-        $midi_out->program_change($part->{channel}, $part->{patch})
-            if defined $part->{patch};
-        $midi_out->control_change($part->{channel}, 7, $part->{volume})
-            if defined $part->{volume};
+        $midi_out->program_change($part->channel, $part->patch)
+            if defined $part->patch;
+        $midi_out->control_change($part->channel, 7, $part->volume)
+            if defined $part->volume;
     }
 }
 
@@ -292,15 +312,15 @@ sub on ($p, $count) {
     # if we are on a beat onset, note_on!
     if (defined $p->onsets->[$p->index] && $p->onsets->[$p->index] == $count) {
         my $n = $p->queue->[$p->index];
-        say 'ON: ', $p->{channel}, ', ', $p->index, ", $count, ", ddc $n if $opt{verbose};
+        say 'ON: ', $p->channel, ', ', $p->index, ", $count, ", ddc $n if $opt{verbose};
         if ($n && defined $n->{pitch}) {
             $midi_out->note_on(
-                $p->{channel},
+                $p->channel,
                 $n->{pitch},
                 $n->{velocity},
             );
             # this note now owns this pitch on this channel
-            $voice_owner{ $p->{channel} }{ $n->{pitch} } = refaddr($n);
+            $voice_owner{ $p->channel }{ $n->{pitch} } = refaddr($n);
         }
         elsif (!$n) {
             warn "WARNING: No note to play?\n\n";
@@ -315,14 +335,14 @@ sub off ($p, $count) {
         $n->{off_sent} = 1; # don't re-check this note again
         next unless defined $n->{pitch}; # rests have nothing to turn off
 
-        my $owner = $voice_owner{ $p->{channel} }{ $n->{pitch} } // -1;
+        my $owner = $voice_owner{ $p->channel }{ $n->{pitch} } // -1;
         if ($owner == refaddr($n)) {
-            say 'OFF: ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
-            $midi_out->note_off($p->{channel}, $n->{pitch}, 0);
-            delete $voice_owner{$p->{channel}}{$n->{pitch}};
+            say 'OFF: ', $p->channel, ", $count, ", ddc $n if $opt{verbose};
+            $midi_out->note_off($p->channel, $n->{pitch}, 0);
+            delete $voice_owner{ $p->channel }{ $n->{pitch} };
         }
         else {
-            say 'SKIPPED OFF (pitch reused): ', $p->{channel}, ", $count, ", ddc $n if $opt{verbose};
+            say 'SKIPPED OFF (pitch reused): ', $p->channel, ", $count, ", ddc $n if $opt{verbose};
         }
     }
 }
@@ -412,6 +432,29 @@ sub normalize_to_pool ($arr, $pool) {
     return $arr;
 }
 
+sub part_to_params ($part) {
+    return {
+        (map { $_ => $part->$_ } $choices{parameters}->@*),
+        metadata => { map { $_ => $part->metadata->{$_} } $choices{metadata}->@* },
+    };
+}
+
+sub save_state () {
+    my %state = (
+        opt         => { %opt },
+        parts       => [ map { part_to_params($_) } @parts ],
+        edit_part   => { %edit_part },
+        muted_parts => { %muted_parts },
+        sections    => { %sections },
+        repeats     => $repeats,
+    );
+    # write to a temp file and rename over STATE, so a crash or a concurrent
+    # read never sees a half-written file
+    my $tmp = STATE . ".$$.tmp";
+    store \%state, $tmp;
+    rename $tmp, STATE or warn "Can't replace @{[STATE]}: $!\n";
+}
+
 sub clamp ($n, $min, $max) {
     return $min unless defined $n;
     $n += 0;               # coerce to numeric, avoids "" or non-numeric strings sneaking through
@@ -485,7 +528,7 @@ get '/' => sub ($c) {
     for my $i (0 .. $#parts) {
         # don't block the channel of the unit currently being edited
         next if defined $edit_part{edit_part} && $i == $edit_part{edit_part};
-        $used_channels{ $parts[$i]->{channel} } = 1;
+        $used_channels{ $parts[$i]->channel } = 1;
     }
     my $fluid = proc_exists(name => FLUID);
     $c->stash(
@@ -517,6 +560,7 @@ post '/settings' => sub ($c) {
     }
     $opt{verbose} = $v->{verbose} ? 1 : 0;
 
+    save_state();
     $c->flash(message => 'Settings saved');
     $c->redirect_to('/');
 } => 'settings';
@@ -579,6 +623,7 @@ post '/parts' => sub ($c) {
         $c->flash(message => 'Unit ' . scalar(@parts) . ' appended');
     }
 
+    save_state();
     $c->redirect_to('/');
 } => 'parts';
 
@@ -589,6 +634,7 @@ post '/clear' => sub ($c) {
     %muted_parts = ();
     %bag  = ();
     clear_arrangement();
+    save_state();
     $c->redirect_to('/');
 } => 'clear';
 
@@ -598,6 +644,7 @@ post '/clear_sections' => sub ($c) {
     %edit_part = ();
     %muted_parts = ();
     %bag  = ();
+    save_state();
     $c->redirect_to('/');
 } => 'clear_sections';
 
@@ -617,6 +664,7 @@ post '/edit' => sub ($c) {
     return $c->redirect_to('/') if defined $timer_id; # don't change while running
     my $v = $c->req->params->to_hash;
     $edit_part{$_} = $v->{$_} for $choices{parameters}->@*, $choices{metadata}->@*, 'edit_part';
+    save_state();
     $c->flash(message => 'Now editing part ' . ($edit_part{edit_part} + 1));
     $c->redirect_to('/');
 } => 'edit';
@@ -624,6 +672,7 @@ post '/edit' => sub ($c) {
 get '/cancel' => sub ($c) {
     %edit_part = ();
     %sections = ();
+    save_state();
     $c->redirect_to('/');
 } => 'cancel';
 
@@ -638,6 +687,7 @@ post '/delete' => sub ($c) {
     %edit_part = ();
     %muted_parts = ();
     clear_arrangement();
+    save_state();
     $c->flash(message => 'Deleted part ' . ($v->{delete_part} + 1));
     $c->redirect_to('/');
 } => 'delete';
@@ -691,6 +741,7 @@ post '/load' => sub ($c) {
     push @parts, Music::VoicePhrase->new(%$_) for $saved_parts->{ $v->{load_parts} }->@*;
     %edit_part = ();
     clear_arrangement();
+    save_state();
     $c->flash(message => 'Unit set loaded: ' . $v->{load_parts});
     $c->redirect_to('/');
 } => 'load';
@@ -710,6 +761,7 @@ post '/mute' => sub ($c) {
             $msg = 'Unmuted part ' . ($idx + 1);
         }
     }
+    save_state();
     $c->flash(message => $msg);
     $c->redirect_to('/');
 };
@@ -735,12 +787,13 @@ post '/load_sections' => sub ($c) {
     @parts   = $arrangement[0]->{parts}->@*;
     %edit_part = ();
 
+    save_state();
     $c->flash(message => 'Section loaded: ' . $c->ellipsisify($sections{section_code}, 16));
     $c->redirect_to('/');
 };
 
 # Engage! ###########################################################
 
-app->secrets(['Make it so, Number One.']);
+app->plugin('Config');
 
 app->start;
